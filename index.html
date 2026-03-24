@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>書面チェックくん｜法律文書チェッカー</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+  :root {
+    --navy: #1a2744;
+    --navy-light: #253560;
+    --navy-dark: #111b33;
+    --gold: #b8933a;
+    --gold-light: #d4aa55;
+    --bg: #faf8f3;
+    --surface: #ffffff;
+    --surface2: #f5f4f0;
+    --border: #e8e5de;
+    --text: #111b33;
+    --text-muted: #9a9488;
+    --error: #c0392b;
+    --warn: #d4841a;
+    --ok: #2e7d52;
+    --error-bg: #fdf0ee;
+    --warn-bg: #fef7ed;
+    --ok-bg: #edf7f2;
+    --header-bg: #1a2744;
+    --panel-header-bg: #111b33;
+    --textarea-bg: #ffffff;
+    --modal-overlay: rgba(0,0,0,0.45);
+  }
+
+  [data-theme="dark"] {
+    --navy: #2a3a6a;
+    --navy-light: #3a4f8a;
+    --navy-dark: #1a2550;
+    --gold: #c8a348;
+    --gold-light: #e0bb65;
+    --bg: #141824;
+    --surface: #1e2535;
+    --surface2: #252d42;
+    --border: #2e3a55;
+    --text: #e8eaf0;
+    --text-muted: #7a86a0;
+    --error: #e05050;
+    --warn: #e09030;
+    --ok: #3a9a68;
+    --error-bg: #2a1e1e;
+    --warn-bg: #2a2010;
+    --ok-bg: #1a2a22;
+    --header-bg: #1a2550;
+    --panel-header-bg: #111b38;
+    --textarea-bg: #1e2535;
+    --modal-overlay: rgba(0,0,0,0.65);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  header {
+    background: var(--header-bg);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 3px solid var(--gold);
+    flex-shrink: 0;
+  }
+
+  .logo-mark {
+    width: 40px; height: 40px;
+    background: var(--gold);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 20px; color: var(--navy-dark); font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .header-text h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px; color: #ffffff; font-weight: 600; letter-spacing: 0.05em;
+  }
+
+  .header-text p {
+    font-size: 10px; color: var(--gold-light); margin-top: 2px; letter-spacing: 0.08em;
+  }
+
+  .header-actions {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .badge {
+    background: var(--navy-light);
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-size: 10px; padding: 4px 10px;
+    border-radius: 20px; letter-spacing: 0.1em;
+  }
+
+  .icon-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #ffffff;
+    width: 34px; height: 34px;
+    border-radius: 6px; font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+
+  .icon-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .main-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .panel-left {
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+
+  .panel-header {
+    background: var(--panel-header-bg);
+    color: #ffffff;
+    padding: 10px 18px;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .panel-header .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%; background: var(--gold);
+  }
+
+  textarea {
+    flex: 1;
+    width: 100%;
+    padding: 18px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px; line-height: 1.9;
+    border: none; resize: none;
+    background: var(--textarea-bg);
+    color: var(--text);
+    outline: none;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  textarea::placeholder { color: var(--text-muted); font-size: 12px; }
+
+  .action-bar {
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    padding: 10px 14px;
+    display: flex; gap: 8px; align-items: center;
+    flex-shrink: 0;
+  }
+
+  .btn-primary {
+    background: var(--navy);
+    color: #ffffff;
+    border: none; padding: 9px 22px;
+    border-radius: 4px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.05em;
+    transition: background 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 9px 14px;
+    border-radius: 4px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px; cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--navy); }
+
+  .char-count {
+    margin-left: auto;
+    font-size: 11px; color: var(--text-muted);
+  }
+
+  .panel-right {
+    display: flex; flex-direction: column;
+    background: var(--surface);
+  }
+
+  .results-area {
+    flex: 1; overflow-y: auto; padding: 16px;
+  }
+
+  .empty-state {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; color: var(--text-muted);
+    text-align: center; gap: 12px;
+  }
+
+  .empty-icon {
+    width: 60px; height: 60px;
+    border: 2px dashed var(--border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+
+  .empty-state p { font-size: 13px; }
+  .empty-state small { font-size: 11px; }
+
+  .score-board {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-bottom: 14px;
+  }
+
+  .score-card {
+    border-radius: 6px; padding: 10px 8px; text-align: center;
+  }
+
+  .score-card.error { background: var(--error-bg); border: 1px solid #f0b8b2; }
+  .score-card.warn  { background: var(--warn-bg);  border: 1px solid #f0d8a8; }
+  .score-card.ok    { background: var(--ok-bg);    border: 1px solid #a8d8b8; }
+  .score-card.info  { background: #eef2fa;          border: 1px solid #b8c8e8; }
+  [data-theme="dark"] .score-card.info { background: #1a2040; border-color: #304060; }
+
+  .score-num {
+    font-size: 26px; font-weight: 700;
+    font-family: 'Noto Serif JP', serif; line-height: 1;
+  }
+
+  .score-card.error .score-num { color: var(--error); }
+  .score-card.warn  .score-num { color: var(--warn); }
+  .score-card.ok    .score-num { color: var(--ok); }
+  .score-card.info  .score-num { color: #2955a0; }
+  [data-theme="dark"] .score-card.info .score-num { color: #6090d0; }
+
+  .score-label { font-size: 10px; margin-top: 4px; font-weight: 500; }
+
+  .check-section {
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px; overflow: hidden;
+  }
+
+  .check-section-header {
+    padding: 9px 12px; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .check-section-header.has-error { background: var(--error-bg); color: var(--error); }
+  .check-section-header.has-warn  { background: var(--warn-bg);  color: var(--warn); }
+  .check-section-header.all-ok   { background: var(--ok-bg);    color: var(--ok); }
+
+  .check-badge {
+    margin-left: auto; font-size: 11px;
+    padding: 2px 8px; border-radius: 20px; font-weight: 700;
+  }
+
+  .has-error .check-badge { background: var(--error); color: white; }
+  .has-warn  .check-badge { background: var(--warn);  color: white; }
+  .all-ok    .check-badge { background: var(--ok);    color: white; }
+
+  .check-items { border-top: 1px solid var(--border); }
+
+  .check-item {
+    padding: 9px 12px; font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 10px; line-height: 1.7;
+    background: var(--surface);
+  }
+
+  .check-item:last-child { border-bottom: none; }
+  .item-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .item-text { flex: 1; }
+  .item-location { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  .highlight-text {
+    background: #fff3cd; border: 1px solid #ffc107;
+    border-radius: 2px; padding: 0 3px;
+    font-family: monospace; font-size: 11px; color: #333;
+  }
+
+  .output-section {
+    margin-top: 10px; border: 1px solid var(--border);
+    border-radius: 6px; overflow: hidden;
+  }
+
+  .output-header {
+    background: var(--panel-header-bg); color: #ffffff;
+    padding: 9px 12px; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .btn-copy {
+    background: var(--gold); color: var(--navy-dark);
+    border: none; padding: 4px 12px; border-radius: 3px;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .output-text {
+    padding: 14px; font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px; line-height: 2; white-space: pre-wrap;
+    background: var(--bg); max-height: 220px; overflow-y: auto;
+    color: var(--text);
+  }
+
+  .term-panel {
+    border-top: 1px solid var(--border);
+    background: var(--surface2); padding: 10px 14px;
+    flex-shrink: 0;
+  }
+
+  .term-panel-title {
+    font-size: 11px; font-weight: 700; color: var(--text);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
+
+  .term-list {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    margin-bottom: 6px; min-height: 24px;
+  }
+
+  .term-tag {
+    background: var(--navy); color: #ffffff;
+    font-size: 11px; padding: 3px 10px;
+    border-radius: 20px; display: flex; align-items: center; gap: 6px;
+  }
+
+  .term-tag button {
+    background: none; border: none; color: var(--gold-light);
+    cursor: pointer; font-size: 13px; line-height: 1; padding: 0;
+  }
+
+  .term-input-row { display: flex; gap: 6px; }
+
+  .term-input {
+    flex: 1; padding: 6px 10px;
+    border: 1px solid var(--border); border-radius: 4px;
+    font-family: 'Noto Sans JP', sans-serif; font-size: 12px;
+    background: var(--surface); color: var(--text); outline: none;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .term-input:focus { border-color: var(--navy); }
+
+  .btn-add-term {
+    background: var(--gold); color: var(--navy-dark);
+    border: none; padding: 6px 12px; border-radius: 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif; white-space: nowrap;
+  }
+
+  /* フッター */
+  footer {
+    background: var(--panel-header-bg);
+    border-top: 2px solid var(--gold);
+    padding: 7px 24px;
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
+  }
+
+  /* モーダル */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: var(--modal-overlay);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    width: 500px; max-width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    transform: translateY(12px);
+    transition: transform 0.25s;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-header {
+    background: var(--panel-header-bg);
+    color: #ffffff;
+    padding: 14px 20px;
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+    border-radius: 10px 10px 0 0;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .modal-close {
+    margin-left: auto;
+    background: none; border: none;
+    color: var(--text-muted); font-size: 20px;
+    cursor: pointer; line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: #ffffff; }
+
+  .modal-body { padding: 20px; }
+
+  /* 使い方モーダル */
+  .how-section { margin-bottom: 20px; }
+
+  .how-section h3 {
+    font-size: 13px; font-weight: 700; color: var(--gold);
+    border-left: 3px solid var(--gold);
+    padding-left: 10px; margin-bottom: 10px;
+  }
+
+  .purpose-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px; padding: 14px 16px;
+    font-size: 12px; line-height: 1.9; color: var(--text);
+  }
+
+  .how-list {
+    list-style: none; display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .how-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12px; line-height: 1.8; color: var(--text);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px; padding: 10px 12px;
+  }
+
+  .step-num {
+    background: var(--navy); color: #ffffff;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+
+  .how-icon { font-size: 18px; flex-shrink: 0; }
+
+  /* 設定モーダル */
+  .setting-row {
+    display: flex; align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+
+  .setting-row:last-child { border-bottom: none; }
+
+  .setting-label {
+    flex: 1; font-size: 13px; font-weight: 500; color: var(--text);
+  }
+
+  .setting-sub {
+    font-size: 11px; color: var(--text-muted); margin-top: 3px;
+  }
+
+  .toggle-wrap { display: flex; align-items: center; gap: 8px; }
+  .toggle-label { font-size: 11px; color: var(--text-muted); }
+
+  .toggle {
+    position: relative; width: 44px; height: 24px;
+    display: inline-block; flex-shrink: 0;
+  }
+
+  .toggle input { opacity: 0; width: 0; height: 0; }
+
+  .toggle-slider {
+    position: absolute; inset: 0;
+    background: var(--border); border-radius: 24px;
+    cursor: pointer; transition: background 0.2s;
+  }
+
+  .toggle-slider::before {
+    content: ''; position: absolute;
+    width: 18px; height: 18px; left: 3px; top: 3px;
+    background: white; border-radius: 50%;
+    transition: transform 0.2s;
+  }
+
+  input:checked + .toggle-slider { background: var(--navy); }
+  input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  .btn-demo {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 4px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+  }
+
+  .btn-demo:hover { border-color: var(--gold); color: var(--gold); }
+
+  .btn-clear-modal {
+    background: var(--error-bg);
+    color: var(--error);
+    border: 1px solid #f0b8b2;
+    padding: 8px 16px; border-radius: 4px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 12px; cursor: pointer; font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .setting-note {
+    font-size: 10px; color: var(--text-muted);
+    text-align: center; margin-top: 16px;
+    padding-top: 12px; border-top: 1px dashed var(--border);
+  }
+
+  .copied-toast {
+    position: fixed; bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy); color: #ffffff;
+    padding: 10px 24px; border-radius: 24px;
+    font-size: 13px; opacity: 0;
+    transition: opacity 0.3s; pointer-events: none; z-index: 999;
+  }
+
+  .copied-toast.show { opacity: 1; }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">書</div>
+  <div class="header-text">
+    <h1>書面チェックくん</h1>
+    <p>法律文書 書式チェック＆整形ツール　｜　試作版 ver.0.1</p>
+  </div>
+  <div class="header-actions">
+    <div class="badge">PROTOTYPE</div>
+    <button class="icon-btn" title="使い方" onclick="openModal('howModal')">❓</button>
+    <button class="icon-btn" title="設定" onclick="openModal('settingModal')">⚙️</button>
+  </div>
+</header>
+
+<div class="main-container">
+  <div class="panel-left">
+    <div class="panel-header">
+      <div class="dot"></div>
+      書面テキストを貼り付けてください
+    </div>
+    <textarea id="inputText" placeholder="Wordからコピーしたテキストをここへ貼り付けてください。
+
+【チェック内容】
+・句読点のチェック（，や．の混入）
+・ナンバリングの順番チェック
+・インデントの自動整形
+・登録用語の表記ゆれ検出"></textarea>
+    <div class="action-bar">
+      <button class="btn-primary" onclick="runCheck()">▶ チェック実行</button>
+      <button class="btn-secondary" onclick="clearAll()">クリア</button>
+      <span class="char-count" id="charCount">0 文字</span>
+    </div>
+  </div>
+
+  <div class="panel-right">
+    <div class="panel-header">
+      <div class="dot"></div>
+      チェック結果
+    </div>
+    <div class="results-area" id="resultsArea">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📋</div>
+        <p>左側にテキストを貼り付けて<br>「チェック実行」を押してください</p>
+        <small>句読点・ナンバリング・インデント・表記ゆれを一括チェックします</small>
+      </div>
+    </div>
+    <div class="term-panel">
+      <div class="term-panel-title">📌 正式用語の登録（表記ゆれ検出に使用）</div>
+      <div class="term-list" id="termList"></div>
+      <div class="term-input-row">
+        <input type="text" class="term-input" id="termInput" placeholder="例：こだまや法律事務所" />
+        <button class="btn-add-term" onclick="addTerm()">＋ 登録</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>Developed by SPC &nbsp;|&nbsp; Smile Plus Consulting</footer>
+
+<!-- 使い方モーダル -->
+<div class="modal-overlay" id="howModal" onclick="closeOnOverlay(event,'howModal')">
+  <div class="modal">
+    <div class="modal-header">
+      ❓ 使い方・目的
+      <button class="modal-close" onclick="closeModal('howModal')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="how-section">
+        <h3>このツールの目的</h3>
+        <div class="purpose-box">
+          法律文書（準備書面・答弁書・内容証明など）の書式ミスを
+          自動でチェック・整形するツールです。<br><br>
+          句読点のミス、項目番号の順番崩れ、インデントのズレ、
+          事務所名などの表記ゆれを一括で発見できます。<br><br>
+          WordからコピーしてAIにかける前の「前処理」として
+          ご活用ください。
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3>基本の使い方（3ステップ）</h3>
+        <ul class="how-list">
+          <li>
+            <span class="step-num">1</span>
+            <span>WordまたはAIで作成した書面テキストを、<strong>左のエリアにコピー＆ペースト</strong>してください。</span>
+          </li>
+          <li>
+            <span class="step-num">2</span>
+            <span>「<strong>▶ チェック実行</strong>」ボタンを押すと、右側に結果が表示されます。<br>🔴 赤は要修正、🟡 黄は要確認です。</span>
+          </li>
+          <li>
+            <span class="step-num">3</span>
+            <span>整形済みテキストを「<strong>コピー</strong>」ボタンで取得し、Wordに貼り付けて仕上げてください。</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="how-section">
+        <h3>チェック内容の詳細</h3>
+        <ul class="how-list">
+          <li>
+            <span class="how-icon">🔤</span>
+            <span><strong>句読点チェック</strong><br>半角カンマ「,」や全角コンマ「，」「．」を検出します。裁判文書では「、」「。」が原則です。</span>
+          </li>
+          <li>
+            <span class="how-icon">🔢</span>
+            <span><strong>ナンバリングチェック</strong><br>第１→１→(1)→ア→(ア)の順番を確認します。番号の飛びや重複を検出します。</span>
+          </li>
+          <li>
+            <span class="how-icon">📐</span>
+            <span><strong>インデント自動整形</strong><br>項目の階層に応じて全角スペースで字下げを整形します。整形済みテキストをそのままコピーできます。</span>
+          </li>
+          <li>
+            <span class="how-icon">📌</span>
+            <span><strong>表記ゆれ検出</strong><br>事務所名・当事者名の正式表記を登録しておくと、略称や誤表記を検出してお知らせします。</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="how-section">
+        <h3>用語登録の使い方</h3>
+        <ul class="how-list">
+          <li>
+            <span class="how-icon">➕</span>
+            <span>画面下の「正式用語の登録」欄に正式名称を入力して「＋登録」を押してください。<br>例：<strong>こだまや法律事務所</strong>と登録すると「こだまやLO」などの略称を検出します。</span>
+          </li>
+          <li>
+            <span class="how-icon">🗑️</span>
+            <span>登録したタグの「×」を押すと削除できます。事件ごとに登録し直してお使いください。</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- 設定モーダル -->
+<div class="modal-overlay" id="settingModal" onclick="closeOnOverlay(event,'settingModal')">
+  <div class="modal">
+    <div class="modal-header">
+      ⚙️ 設定
+      <button class="modal-close" onclick="closeModal('settingModal')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="setting-row">
+        <div class="setting-label">
+          カラーモード
+          <div class="setting-sub">画面の明暗を切り替えます</div>
+        </div>
+        <div class="toggle-wrap">
+          <span class="toggle-label">ライト</span>
+          <label class="toggle">
+            <input type="checkbox" id="darkToggle" onchange="toggleTheme(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">ダーク</span>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">
+          デモデータを読み込む
+          <div class="setting-sub">チェック機能を確認できるサンプル文章を挿入します</div>
+        </div>
+        <button class="btn-demo" onclick="loadDemo(); closeModal('settingModal')">読み込む</button>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">
+          テキストをクリアする
+          <div class="setting-sub">入力エリアとチェック結果をすべて消去します</div>
+        </div>
+        <button class="btn-clear-modal" onclick="clearAll(); closeModal('settingModal')">クリア</button>
+      </div>
+
+      <div class="setting-note">
+        ver.0.1 試作版　｜　Developed by SPC　｜　Smile Plus Consulting
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="copied-toast" id="toast">コピーしました！</div>
+
+<script>
+  let registeredTerms = [];
+  let formattedResult = '';
+
+  document.getElementById('inputText').addEventListener('input', function() {
+    document.getElementById('charCount').textContent = this.value.length + ' 文字';
+  });
+
+  document.getElementById('termInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') addTerm();
+  });
+
+  function toggleTheme(isDark) {
+    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.add('open');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+  }
+
+  function closeOnOverlay(e, id) {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  }
+
+  function addTerm() {
+    const input = document.getElementById('termInput');
+    const term = input.value.trim();
+    if (!term || registeredTerms.includes(term)) { input.value = ''; return; }
+    registeredTerms.push(term);
+    renderTerms();
+    input.value = '';
+  }
+
+  function removeTerm(term) {
+    registeredTerms = registeredTerms.filter(t => t !== term);
+    renderTerms();
+  }
+
+  function renderTerms() {
+    document.getElementById('termList').innerHTML = registeredTerms.map(t =>
+      `<div class="term-tag">${t}<button onclick="removeTerm('${t}')">×</button></div>`
+    ).join('');
+  }
+
+  const sampleText = `準備書面（１）
+
+令和６年１０月１５日
+
+東京地方裁判所民事第３部　御中
+
+原告訴訟代理人弁護士　山田　太郎
+
+第１　はじめに
+本書面は，原告が令和６年９月１日付け訴状において主張した請求原因を補充し、被告の令和６年９月２５日付け答弁書における主張に反論するものである．
+
+第２　当事者について
+１ 原告について
+(1) 原告・株式会社サクラ商事（以下「原告」という。）は、東京都渋谷区に本店を置く、衣料品の製造及び販売を主たる業とする株式会社である。
+(2) 原告は、資本金５，０００万円、従業員数約１５０名を有する中規模企業であり、創業以来３０年以上にわたり安定した事業を継続してきた。
+ア 原告の主要取引先は、百貨店・量販店を中心とする国内小売業者であり、年間売上高はおよそ２０億円に達している。
+イ 原告は、品質管理体制の整備に積極的に取り組み，業界団体から複数回にわたり表彰を受けている。
+
+２ 被告について
+(1) 被告・有限会社ナデシコ物産（以下「被告」という。）は、東京都台東区に本店を置く、物品の輸入及び販売を業とする法人である。
+(2) 被告の代表者は鈴木一郎氏であり、同氏は平成１５年の設立当初から現在に至るまで代表取締役の地位にある。
+ア 被告は，近年，輸入商材の品質管理において重大な問題を複数抱えていたことが，本件訴訟に係る証拠調べの過程で明らかとなった。
+(ア) 具体的には、令和４年から令和５年にかけて、被告が輸入した衣料品のうち少なくとも３ロット分において，国内基準を満たさない有害物質が検出されている。
+(イ) この事実は、国民生活センターへの申告記録（甲第４号証）によっても裏付けられる。
+イ また、被告は、サクラ商事との間で締結した売買基本契約書（甲第１号証）の内容を十分に理解していなかったと主張するが，この主張は信義則に反するものといわざるを得ない。
+
+第３　本件契約の経緯
+１ 契約締結の経緯
+(1) 原告と被告は，令和３年４月１日，商品売買基本契約（以下「本件契約」という。）を締結した。
+(2) 本件契約の主な内容は以下のとおりである.
+ア 被告は原告に対し、毎月末日までに翌月分の発注書を送付する。
+イ 原告は発注書受領後１４日以内に納品を完了する。
+ウ 品質基準は別紙仕様書に定める基準による。
+エ 瑕疵があった場合、被告は受領後３０日以内に原告へ通知しなければならない。
+(ウ) 代金の支払いは、納品日の翌月末日払いとする。
+
+２ 契約履行の状況
+(1) 原告は，本件契約締結後，令和３年５月から令和５年３月までの間、合計２２回にわたり商品を納品し、そのすべてにおいて被告から品質に関するクレームを受けることなく代金を受領してきた。
+(2) 被告が初めて品質上の問題を指摘したのは令和５年４月１２日のことであり，この時点はナデシコ物産・鈴木社長の経営方針変更が公表された直後である。
+ア この点に関し、被告は、商品の瑕疵を以前から認識していたと主張する。
+イ しかし、被告が提出した証拠（乙第２号証ないし乙第５号証）を精査しても，令和５年４月以前に瑕疵の存在を示す客観的証拠は存在しない。
+(ア) とりわけ、被告が主張する「社内検査報告書」については、作成日付の信憑性に重大な疑義がある。
+(イ) この点については、原告が申請した文書送付嘱託（令和６年８月申請）において追加の資料開示を求めているところである。
+
+第４　被告の主張に対する反論
+１ 瑕疵の存否について
+(1) 被告は，本件商品に染料の基準値超過という瑕疵があったと主張するが，この主張は以下の理由から失当である。
+ア 原告は、出荷前に第三者機関であるジャパンテスト株式会社（以下「ジャパンテスト」という。）による品質検査を実施しており，その検査結果（甲第２号証）はすべて基準値内であった。
+イ 被告が主張する「基準値超過」の根拠となる検査は，被告が独自に依頼したものであり，検査機関の信頼性に問題がある。
+(ア) 当該検査を実施したとされるＡＢＣ検査センターは、関連法令に基づく登録を受けていない機関である（甲第６号証）。
+(イ) したがって，同センターの検査結果は証拠としての信用性を欠くものといわざるを得ない。
+
+２ 損害額について
+(1) 仮に被告の主張する瑕疵が存在するとしても（原告はこれを争う。）、被告が主張する損害額１，５００万円は過大である。
+(2) 被告が主張する損害の内訳は以下のとおりであるが，いずれも相当性を欠く。
+ア 商品廃棄費用 金２００万円
+ア 得意先への補償費用 金８００万円
+ウ 信用毀損に伴う逸失利益 金５００万円
+
+第５　結論
+以上の次第であり，被告の主張はいずれも理由がなく，原告の本訴請求はすべて認容されるべきである。
+原告は，引き続き必要な証拠を提出するとともに，適切な時期に証人申請を行う予定である。
+
+以上`;
+
+  function loadDemo() {
+    document.getElementById('inputText').value = sampleText;
+    document.getElementById('charCount').textContent = sampleText.length + ' 文字';
+    registeredTerms = ['株式会社サクラ商事', '有限会社ナデシコ物産', 'ジャパンテスト株式会社'];
+    renderTerms();
+    showToast('デモデータを読み込みました');
+  }
+
+  function runCheck() {
+    const text = document.getElementById('inputText').value;
+    if (!text.trim()) { alert('テキストを入力してください'); return; }
+    const results = {
+      punctuation: checkPunctuation(text),
+      numbering: checkNumbering(text),
+      terms: checkTerms(text),
+    };
+    formattedResult = formatIndent(text);
+    renderResults(results, text);
+  }
+
+  function checkPunctuation(text) {
+    const issues = [];
+    text.split('\n').forEach((line, idx) => {
+      [...line.matchAll(/,/g)].forEach(() =>
+        issues.push({ type: 'error', msg: `読点に半角カンマ「,」が使われています → 「、」を使ってください`, location: `${idx+1}行目`, found: ',' }));
+      [...line.matchAll(/，/g)].forEach(() =>
+        issues.push({ type: 'warn', msg: `読点に「，」が使われています → 原則「、」を使ってください`, location: `${idx+1}行目`, found: '，' }));
+      [...line.matchAll(/\．/g)].forEach(() =>
+        issues.push({ type: 'warn', msg: `句点に「．」が使われています → 「。」を使ってください`, location: `${idx+1}行目`, found: '．' }));
+      [...line.matchAll(/\./g)].forEach(() =>
+        issues.push({ type: 'warn', msg: `句点に半角ピリオド「.」が使われています → 「。」を使ってください`, location: `${idx+1}行目`, found: '.' }));
+    });
+    return issues;
+  }
+
+  function checkNumbering(text) {
+    const issues = [];
+    const patterns = [
+      { re: /^第\s*([０-９0-9]+)/, label: '第N（第１階層）' },
+      { re: /^\s*([０-９0-9]+)[\s　]/, label: '数字（第２階層）' },
+      { re: /^\s*[（(]([０-９0-9]+)[）)]/, label: '(1)形式（第３階層）' },
+      { re: /^\s*([ア-ン])[\s　]/, label: 'カタカナ（第４階層）' },
+      { re: /^\s*[（(]([ア-ン])[）)]/, label: '(ア)形式（第５階層）' },
+    ];
+    const counters = [0,0,0,0,0];
+    text.split('\n').forEach((line, idx) => {
+      patterns.forEach((pat, pi) => {
+        const m = line.match(pat.re);
+        if (m && m[1] !== undefined) {
+          for (let i = pi+1; i < counters.length; i++) counters[i] = 0;
+          const num = toIndex(m[1]);
+          const expected = counters[pi] + 1;
+          if (num !== expected && num !== 1)
+            issues.push({ type: 'warn', msg: `${pat.label}の番号が${expected}のはずですが「${m[1]}」になっています`, location: `${idx+1}行目` });
+          counters[pi] = num;
+        }
+      });
+    });
+    return issues;
+  }
+
+  // 数字・カタカナを連番インデックスに変換
+  function toIndex(str) {
+    if (!str) return 0;
+    const katakana = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const ki = katakana.indexOf(str);
+    if (ki >= 0) return ki + 1;
+    return parseInt(str.replace(/[０-９]/g, s => s.charCodeAt(0) - 0xFF10)) || 0;
+  }
+
+  function toHalfNum(str) {
+    if (!str) return 0;
+    return parseInt(str.replace(/[０-９]/g, s => s.charCodeAt(0) - 0xFF10)) || 0;
+  }
+
+  function checkTerms(text) {
+    const issues = [];
+    if (!registeredTerms.length) return issues;
+    text.split('\n').forEach((line, idx) => {
+      registeredTerms.forEach(term => {
+        const base = term.replace(/[法律事務所株式会社有限会社]/g, '');
+        if (!line.includes(term) && base.length >= 2) {
+          for (let len = 2; len <= Math.min(base.length - 1, 6); len++) {
+            const abbr = base.substring(0, len);
+            if (line.includes(abbr)) {
+              issues.push({ type: 'warn', msg: `「${abbr}」という表記があります。「${term}」の略称でないか確認してください`, location: `${idx+1}行目` });
+              break;
+            }
+          }
+        }
+      });
+    });
+    return issues;
+  }
+
+  function formatIndent(text) {
+    return text.split('\n').map(line => {
+      const t = line.trim();
+      if (!t) return '';
+      if (/^第\s*[０-９0-9]+/.test(t)) return t;
+      if (/^[０-９0-9]+[\s　]/.test(t)) return '　' + t;
+      if (/^[（(][０-９0-9]+[）)]/.test(t)) return '　　' + t;
+      if (/^[ア-ン][\s　]/.test(t)) return '　　　' + t;
+      if (/^[（(][ア-ン][）)]/.test(t)) return '　　　　' + t;
+      if (/^[ａ-ｚa-z][\s　]/.test(t)) return '　　　　　' + t;
+      if (/^[（(][ａ-ｚa-z][）)]/.test(t)) return '　　　　　　' + t;
+      return line;
+    }).join('\n');
+  }
+
+  function renderResults(results, text) {
+    const totalErrors = [...results.punctuation, ...results.numbering].filter(i => i.type === 'error').length;
+    const totalWarns = [...results.punctuation, ...results.numbering, ...results.terms].filter(i => i.type === 'warn').length;
+
+    let html = `
+      <div class="score-board">
+        <div class="score-card ${totalErrors > 0 ? 'error' : 'ok'}">
+          <div class="score-num">${totalErrors}</div><div class="score-label">要修正</div>
+        </div>
+        <div class="score-card ${totalWarns > 0 ? 'warn' : 'ok'}">
+          <div class="score-num">${totalWarns}</div><div class="score-label">要確認</div>
+        </div>
+        <div class="score-card info">
+          <div class="score-num">${results.terms.length || '-'}</div><div class="score-label">表記ゆれ</div>
+        </div>
+        <div class="score-card ok">
+          <div class="score-num">${text.length}</div><div class="score-label">文字数</div>
+        </div>
+      </div>`;
+
+    html += renderSection('句読点チェック', results.punctuation);
+    html += renderSection('ナンバリングチェック', results.numbering);
+    html += renderSection('表記ゆれチェック', results.terms);
+
+    html += `
+      <div class="output-section">
+        <div class="output-header">
+          📐 インデント整形済みテキスト
+          <button class="btn-copy" onclick="copyFormatted()">コピー</button>
+        </div>
+        <div class="output-text">${escapeHtml(formattedResult)}</div>
+      </div>`;
+
+    document.getElementById('resultsArea').innerHTML = html;
+  }
+
+  function renderSection(title, items) {
+    const hasError = items.some(i => i.type === 'error');
+    const hasWarn  = items.some(i => i.type === 'warn');
+    const cls = hasError ? 'has-error' : hasWarn ? 'has-warn' : 'all-ok';
+    const icon = hasError ? '❌' : hasWarn ? '⚠️' : '✅';
+    const badge = items.length === 0 ? 'OK' : items.length + '件';
+
+    let html = `<div class="check-section">
+      <div class="check-section-header ${cls}">${icon} ${title}<span class="check-badge">${badge}</span></div>
+      <div class="check-items">`;
+
+    if (items.length > 0) {
+      items.forEach(item => {
+        html += `<div class="check-item">
+          <span class="item-icon">${item.type === 'error' ? '🔴' : '🟡'}</span>
+          <div class="item-text">${item.msg}
+            ${item.found ? `<span class="highlight-text">${escapeHtml(item.found)}</span>` : ''}
+            <div class="item-location">${item.location}</div>
+          </div></div>`;
+      });
+    } else {
+      html += `<div class="check-item"><span class="item-icon">✅</span><div class="item-text">問題は検出されませんでした</div></div>`;
+    }
+
+    html += `</div></div>`;
+    return html;
+  }
+
+  function escapeHtml(t) {
+    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function copyFormatted() {
+    // クリップボードAPIが使える場合
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(formattedResult)
+        .then(() => showToast('コピーしました！'))
+        .catch(() => fallbackCopy(formattedResult));
+    } else {
+      fallbackCopy(formattedResult);
+    }
+  }
+
+  // フォールバック：テキストエリアを使ったコピー（ローカルファイル・旧ブラウザ対応）
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    ta.style.top = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showToast('コピーしました！');
+    } catch (e) {
+      showToast('コピー失敗：手動で選択してください');
+    }
+    document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  function clearAll() {
+    document.getElementById('inputText').value = '';
+    document.getElementById('charCount').textContent = '0 文字';
+    document.getElementById('resultsArea').innerHTML = `
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📋</div>
+        <p>左側にテキストを貼り付けて<br>「チェック実行」を押してください</p>
+        <small>句読点・ナンバリング・インデント・表記ゆれを一括チェックします</small>
+      </div>`;
+  }
+
+  window.addEventListener('load', loadDemo);
+</script>
+</body>
+</html>
