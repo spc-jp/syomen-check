@@ -109,7 +109,15 @@
     border-radius: 20px; letter-spacing: 0.1em;
   }
 
-  .icon-btn {
+  .header-text:hover h1 {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--gold-light);
+  }
+
+  .logo-mark:hover {
+    opacity: 0.85;
+  }
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
     color: #ffffff;
@@ -563,8 +571,8 @@
 <body>
 
 <header>
-  <div class="logo-mark">書</div>
-  <div class="header-text">
+  <div class="logo-mark" onclick="resetToTop()" style="cursor:pointer;" title="最初の画面に戻る">書</div>
+  <div class="header-text" onclick="resetToTop()" style="cursor:pointer;" title="最初の画面に戻る">
     <h1>書面チェックくん</h1>
     <p>法律文書 書式チェック＆整形ツール　｜　試作版 ver.0.1</p>
   </div>
@@ -1075,6 +1083,11 @@
     toast.textContent = msg;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  function resetToTop() {
+    clearAll();
+    showToast('最初の画面に戻りました');
   }
 
   function clearAll() {
