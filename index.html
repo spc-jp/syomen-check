@@ -3,126 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>書面チェックくん｜法律文書チェッカー</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+<title>書面チェックくん | 弁護士 思考コンパス Suite</title>
 
+<!-- Favicon -->
+<link rel="icon" href="https://spc-jp.github.io/syomen-check/favicon.png" type="image/png">
+
+<!-- Google Fonts: LPと統一 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Icons: LPと統一 -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<style>
+  /* ------------------------------------------------------------------
+     Theme Variables (思考コンパススイート共通)
+  ------------------------------------------------------------------ */
   :root {
-    --navy: #1a2744;
-    --navy-light: #253560;
-    --navy-dark: #111b33;
-    --gold: #b8933a;
-    --gold-light: #d4aa55;
-    --bg: #faf8f3;
-    --surface: #ffffff;
-    --surface2: #f5f4f0;
-    --border: #e8e5de;
-    --text: #111b33;
-    --text-muted: #9a9488;
-    --error: #c0392b;
-    --warn: #d4841a;
-    --ok: #2e7d52;
+    --primary-h: 215;
+    --primary-s: 40%;
+    --primary-l: 20%; 
+    
+    --primary-color: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
+    --primary-light: hsl(var(--primary-h), var(--primary-s), 90%);
+    
+    --premium-gold: #c5a059; 
+    --premium-gold-light: #f0e6d2;
+    
+    --accent-color: #e74c3c; /* Error */
+    --warn-color: #f39c12;   /* Warning */
+    --success-color: #27ae60;/* OK */
+    
+    --bg-body: #f8f9fa;
+    --bg-surface: #ffffff;
+    --bg-surface-alt: #f4f6f8; 
+    --text-main: #2c3e50;
+    --text-muted: #636e72;
+    --border-color: #dfe6e9;
+    
     --error-bg: #fdf0ee;
-    --warn-bg: #fef7ed;
-    --ok-bg: #edf7f2;
-    --header-bg: #1a2744;
-    --panel-header-bg: #111b33;
-    --textarea-bg: #ffffff;
+    --warn-bg: #fef8e8;
+    --ok-bg: #eafaf1;
+
+    --shadow-float: 0 10px 20px -5px rgba(0, 0, 0, 0.08);
     --modal-overlay: rgba(0,0,0,0.45);
   }
 
   [data-theme="dark"] {
-    --navy: #2a3a6a;
-    --navy-light: #3a4f8a;
-    --navy-dark: #1a2550;
-    --gold: #c8a348;
-    --gold-light: #e0bb65;
-    --bg: #141824;
-    --surface: #1e2535;
-    --surface2: #252d42;
-    --border: #2e3a55;
-    --text: #e8eaf0;
-    --text-muted: #7a86a0;
-    --error: #e05050;
-    --warn: #e09030;
-    --ok: #3a9a68;
-    --error-bg: #2a1e1e;
-    --warn-bg: #2a2010;
-    --ok-bg: #1a2a22;
-    --header-bg: #1a2550;
-    --panel-header-bg: #111b38;
-    --textarea-bg: #1e2535;
-    --modal-overlay: rgba(0,0,0,0.65);
+    --bg-body: #0f1115;
+    --bg-surface: #1a1d21;
+    --bg-surface-alt: #23272e;
+    --text-main: #ecf0f1;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --primary-color: #2c3e50;
+    
+    --error-bg: #3f1a1a;
+    --warn-bg: #402a10;
+    --ok-bg: #1a3020;
+    --modal-overlay: rgba(0,0,0,0.7);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+    background: var(--bg-body);
+    color: var(--text-main);
     height: 100vh;
     display: flex;
     flex-direction: column;
     transition: background 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
   }
 
+  /* ------------------------------------------------------------------
+     Header
+  ------------------------------------------------------------------ */
   header {
-    background: var(--header-bg);
+    background: var(--primary-color);
     padding: 12px 24px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    border-bottom: 3px solid var(--gold);
+    gap: 16px;
+    border-bottom: 3px solid var(--premium-gold);
     flex-shrink: 0;
   }
 
   .logo-mark {
-    width: 40px; height: 40px;
-    background: var(--gold);
-    border-radius: 6px;
+    width: 42px; height: 42px;
+    background: var(--premium-gold);
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'Noto Serif JP', serif;
-    font-size: 20px; color: var(--navy-dark); font-weight: 700;
+    font-size: 24px; color: #ffffff;
     flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
   .header-text h1 {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 18px; color: #ffffff; font-weight: 600; letter-spacing: 0.05em;
+    font-size: 18px; color: #ffffff; font-weight: 700; letter-spacing: 0.02em;
   }
 
   .header-text p {
-    font-size: 10px; color: var(--gold-light); margin-top: 2px; letter-spacing: 0.08em;
+    font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; letter-spacing: 0.05em;
   }
 
   .header-actions {
     margin-left: auto;
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; gap: 12px;
   }
 
   .badge {
-    background: var(--navy-light);
-    border: 1px solid var(--gold);
-    color: var(--gold-light);
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #ffffff;
     font-size: 10px; padding: 4px 10px;
-    border-radius: 20px; letter-spacing: 0.1em;
+    border-radius: 20px; letter-spacing: 0.1em; font-weight: 700;
   }
 
-  .header-text:hover h1 {
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    text-decoration-color: var(--gold-light);
-  }
-
-  .logo-mark:hover {
-    opacity: 0.85;
-  }
+  .icon-btn {
     background: rgba(255,255,255,0.08);
     border: 1px solid rgba(255,255,255,0.15);
     color: #ffffff;
-    width: 34px; height: 34px;
-    border-radius: 6px; font-size: 16px;
+    width: 36px; height: 36px;
+    border-radius: 6px; font-size: 18px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.2s;
@@ -130,6 +135,9 @@
 
   .icon-btn:hover { background: rgba(255,255,255,0.2); }
 
+  /* ------------------------------------------------------------------
+     Main Layout
+  ------------------------------------------------------------------ */
   .main-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -138,456 +146,230 @@
   }
 
   .panel-left {
-    border-right: 1px solid var(--border);
+    border-right: 1px solid var(--border-color);
     display: flex; flex-direction: column;
+    background: var(--bg-surface);
   }
 
   .panel-header {
-    background: var(--panel-header-bg);
-    color: #ffffff;
-    padding: 10px 18px;
-    font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+    background: var(--bg-surface-alt);
+    color: var(--text-main);
+    padding: 12px 20px;
+    font-size: 13px; font-weight: 700;
     display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
   }
-
-  .panel-header .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%; background: var(--gold);
-  }
+  .panel-header i { color: var(--primary-color); font-size: 16px; }
 
   textarea {
-    flex: 1;
-    width: 100%;
-    padding: 18px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 13px; line-height: 1.9;
+    flex: 1; width: 100%; padding: 20px;
+    font-family: inherit; font-size: 14px; line-height: 1.9;
     border: none; resize: none;
-    background: var(--textarea-bg);
-    color: var(--text);
+    background: transparent; color: var(--text-main);
     outline: none;
-    transition: background 0.3s, color 0.3s;
   }
-
-  textarea::placeholder { color: var(--text-muted); font-size: 12px; }
+  textarea::placeholder { color: var(--text-muted); font-size: 13px; }
 
   .action-bar {
-    background: var(--surface2);
-    border-top: 1px solid var(--border);
-    padding: 10px 14px;
-    display: flex; gap: 8px; align-items: center;
+    background: var(--bg-surface-alt);
+    border-top: 1px solid var(--border-color);
+    padding: 12px 20px;
+    display: flex; gap: 12px; align-items: center;
     flex-shrink: 0;
   }
 
   .btn-primary {
-    background: var(--navy);
-    color: #ffffff;
-    border: none; padding: 9px 22px;
-    border-radius: 4px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 13px; font-weight: 700;
-    cursor: pointer; letter-spacing: 0.05em;
-    transition: background 0.2s;
-    display: flex; align-items: center; gap: 6px;
+    background: var(--primary-color); color: #ffffff;
+    border: none; padding: 10px 24px; border-radius: 6px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
-
-  .btn-primary:hover { background: var(--navy-light); }
-  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:hover { background: hsl(var(--primary-h), var(--primary-s), 25%); transform: translateY(-1px); }
 
   .btn-secondary {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 9px 14px;
-    border-radius: 4px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 12px; cursor: pointer;
-    transition: all 0.2s;
+    background: var(--bg-surface); color: var(--text-main);
+    border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 6px;
+    font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
   }
+  .btn-secondary:hover { border-color: var(--primary-color); color: var(--primary-color); }
 
-  .btn-secondary:hover { border-color: var(--navy); }
+  .char-count { margin-left: auto; font-size: 12px; color: var(--text-muted); font-family: 'Roboto', sans-serif; font-weight: 500; }
 
-  .char-count {
-    margin-left: auto;
-    font-size: 11px; color: var(--text-muted);
-  }
-
+  /* ------------------------------------------------------------------
+     Results Panel
+  ------------------------------------------------------------------ */
   .panel-right {
     display: flex; flex-direction: column;
-    background: var(--surface);
+    background: var(--bg-body);
   }
 
-  .results-area {
-    flex: 1; overflow-y: auto; padding: 16px;
-  }
+  .results-area { flex: 1; overflow-y: auto; padding: 20px; }
 
   .empty-state {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     height: 100%; color: var(--text-muted);
-    text-align: center; gap: 12px;
+    text-align: center; gap: 16px;
   }
-
   .empty-icon {
-    width: 60px; height: 60px;
-    border: 2px dashed var(--border);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
+    width: 70px; height: 70px;
+    background: var(--bg-surface); border: 1px solid var(--border-color);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 32px; color: var(--primary-color); opacity: 0.7;
+    box-shadow: var(--shadow-float);
   }
+  .empty-state p { font-size: 14px; font-weight: 700; color: var(--text-main); }
+  .empty-state small { font-size: 12px; line-height: 1.6; }
 
-  .empty-state p { font-size: 13px; }
-  .empty-state small { font-size: 11px; }
+  /* Score Board */
+  .score-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .score-card { background: var(--bg-surface); border-radius: 8px; padding: 16px 10px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+  
+  .score-card.error { border-bottom: 3px solid var(--accent-color); }
+  .score-card.warn  { border-bottom: 3px solid var(--warn-color); }
+  .score-card.ok    { border-bottom: 3px solid var(--success-color); }
+  .score-card.info  { border-bottom: 3px solid var(--primary-color); }
 
-  .score-board {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 8px; margin-bottom: 14px;
-  }
+  .score-num { font-size: 28px; font-weight: 700; font-family: 'Roboto', sans-serif; line-height: 1; }
+  .score-card.error .score-num { color: var(--accent-color); }
+  .score-card.warn  .score-num { color: var(--warn-color); }
+  .score-card.ok    .score-num { color: var(--success-color); }
+  .score-card.info  .score-num { color: var(--primary-color); }
+  .score-label { font-size: 11px; margin-top: 8px; font-weight: 700; color: var(--text-muted); }
 
-  .score-card {
-    border-radius: 6px; padding: 10px 8px; text-align: center;
-  }
+  /* Check Section */
+  .check-section { margin-bottom: 16px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+  .check-section-header { padding: 12px 16px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .check-section-header i { font-size: 16px; }
 
-  .score-card.error { background: var(--error-bg); border: 1px solid #f0b8b2; }
-  .score-card.warn  { background: var(--warn-bg);  border: 1px solid #f0d8a8; }
-  .score-card.ok    { background: var(--ok-bg);    border: 1px solid #a8d8b8; }
-  .score-card.info  { background: #eef2fa;          border: 1px solid #b8c8e8; }
-  [data-theme="dark"] .score-card.info { background: #1a2040; border-color: #304060; }
+  .check-section-header.has-error { background: var(--error-bg); color: var(--accent-color); border-bottom: 1px solid rgba(231, 76, 60, 0.2); }
+  .check-section-header.has-warn  { background: var(--warn-bg);  color: var(--warn-color); border-bottom: 1px solid rgba(243, 156, 18, 0.2); }
+  .check-section-header.all-ok    { background: var(--ok-bg);    color: var(--success-color); border-bottom: 1px solid rgba(39, 174, 96, 0.2); }
 
-  .score-num {
-    font-size: 26px; font-weight: 700;
-    font-family: 'Noto Serif JP', serif; line-height: 1;
-  }
+  .check-badge { margin-left: auto; font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 700; font-family: 'Roboto', sans-serif;}
+  .has-error .check-badge { background: var(--accent-color); color: white; }
+  .has-warn  .check-badge { background: var(--warn-color);  color: white; }
+  .all-ok    .check-badge { background: var(--success-color);    color: white; }
 
-  .score-card.error .score-num { color: var(--error); }
-  .score-card.warn  .score-num { color: var(--warn); }
-  .score-card.ok    .score-num { color: var(--ok); }
-  .score-card.info  .score-num { color: #2955a0; }
-  [data-theme="dark"] .score-card.info .score-num { color: #6090d0; }
-
-  .score-label { font-size: 10px; margin-top: 4px; font-weight: 500; }
-
-  .check-section {
-    margin-bottom: 10px;
-    border: 1px solid var(--border);
-    border-radius: 6px; overflow: hidden;
-  }
-
-  .check-section-header {
-    padding: 9px 12px; font-size: 12px; font-weight: 700;
-    display: flex; align-items: center; gap: 8px;
-  }
-
-  .check-section-header.has-error { background: var(--error-bg); color: var(--error); }
-  .check-section-header.has-warn  { background: var(--warn-bg);  color: var(--warn); }
-  .check-section-header.all-ok   { background: var(--ok-bg);    color: var(--ok); }
-
-  .check-badge {
-    margin-left: auto; font-size: 11px;
-    padding: 2px 8px; border-radius: 20px; font-weight: 700;
-  }
-
-  .has-error .check-badge { background: var(--error); color: white; }
-  .has-warn  .check-badge { background: var(--warn);  color: white; }
-  .all-ok    .check-badge { background: var(--ok);    color: white; }
-
-  .check-items { border-top: 1px solid var(--border); }
-
-  .check-item {
-    padding: 9px 12px; font-size: 12px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: flex-start; gap: 10px; line-height: 1.7;
-    background: var(--surface);
-  }
-
+  .check-item { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border-color); display: flex; align-items: flex-start; gap: 12px; line-height: 1.7; color: var(--text-main); }
   .check-item:last-child { border-bottom: none; }
-  .item-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .item-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
   .item-text { flex: 1; }
-  .item-location { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .item-location { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-family: 'Roboto', sans-serif; }
 
-  .highlight-text {
-    background: #fff3cd; border: 1px solid #ffc107;
-    border-radius: 2px; padding: 0 3px;
-    font-family: monospace; font-size: 11px; color: #333;
-  }
+  .highlight-text { background: rgba(243, 156, 18, 0.15); border: 1px solid rgba(243, 156, 18, 0.5); border-radius: 4px; padding: 2px 6px; font-family: monospace; font-size: 12px; color: var(--text-main); margin: 0 4px; }
 
-  .output-section {
-    margin-top: 10px; border: 1px solid var(--border);
-    border-radius: 6px; overflow: hidden;
-  }
+  /* Output Section */
+  .output-section { margin-top: 16px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: var(--bg-surface); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+  .output-header { background: var(--bg-surface-alt); color: var(--text-main); padding: 12px 16px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); }
+  .output-header span { display: flex; align-items: center; gap: 8px; }
+  .output-header i { color: var(--primary-color); font-size: 16px; }
+  
+  .btn-copy { background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+  .btn-copy:hover { border-color: var(--primary-color); color: var(--primary-color); }
 
-  .output-header {
-    background: var(--panel-header-bg); color: #ffffff;
-    padding: 9px 12px; font-size: 12px; font-weight: 700;
-    display: flex; align-items: center; justify-content: space-between;
-  }
+  .output-text { padding: 16px; font-size: 13px; line-height: 2; white-space: pre-wrap; background: var(--bg-surface); max-height: 250px; overflow-y: auto; color: var(--text-main); }
 
-  .btn-copy {
-    background: var(--gold); color: var(--navy-dark);
-    border: none; padding: 4px 12px; border-radius: 3px;
-    font-size: 11px; font-weight: 700; cursor: pointer;
-    font-family: 'Noto Sans JP', sans-serif;
-  }
+  /* Term Panel */
+  .term-panel { border-top: 1px solid var(--border-color); background: var(--bg-surface); padding: 16px 20px; flex-shrink: 0; }
+  .term-panel-title { font-size: 12px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .term-panel-title i { color: var(--premium-gold); font-size: 16px; }
+  .term-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; min-height: 28px; }
+  .term-tag { background: var(--bg-surface-alt); border: 1px solid var(--border-color); color: var(--text-main); font-size: 12px; padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
+  .term-tag button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; display: flex; align-items: center; transition: 0.2s; }
+  .term-tag button:hover { color: var(--accent-color); }
+  
+  .term-input-row { display: flex; gap: 8px; }
+  .term-input { flex: 1; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 13px; background: var(--bg-surface-alt); color: var(--text-main); outline: none; transition: border-color 0.2s; }
+  .term-input:focus { border-color: var(--primary-color); background: var(--bg-surface); }
+  
+  .btn-add-term { background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-main); padding: 0 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+  .btn-add-term:hover { border-color: var(--premium-gold); color: var(--premium-gold); }
 
-  .output-text {
-    padding: 14px; font-family: 'Noto Sans JP', sans-serif;
-    font-size: 12px; line-height: 2; white-space: pre-wrap;
-    background: var(--bg); max-height: 220px; overflow-y: auto;
-    color: var(--text);
-  }
+  /* ------------------------------------------------------------------
+     Footer
+  ------------------------------------------------------------------ */
+  footer { background: var(--bg-surface-alt); border-top: 1px solid var(--border-color); padding: 12px 24px; text-align: right; font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; flex-shrink: 0; }
 
-  .term-panel {
-    border-top: 1px solid var(--border);
-    background: var(--surface2); padding: 10px 14px;
-    flex-shrink: 0;
-  }
-
-  .term-panel-title {
-    font-size: 11px; font-weight: 700; color: var(--text);
-    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
-  }
-
-  .term-list {
-    display: flex; flex-wrap: wrap; gap: 5px;
-    margin-bottom: 6px; min-height: 24px;
-  }
-
-  .term-tag {
-    background: var(--navy); color: #ffffff;
-    font-size: 11px; padding: 3px 10px;
-    border-radius: 20px; display: flex; align-items: center; gap: 6px;
-  }
-
-  .term-tag button {
-    background: none; border: none; color: var(--gold-light);
-    cursor: pointer; font-size: 13px; line-height: 1; padding: 0;
-  }
-
-  .term-input-row { display: flex; gap: 6px; }
-
-  .term-input {
-    flex: 1; padding: 6px 10px;
-    border: 1px solid var(--border); border-radius: 4px;
-    font-family: 'Noto Sans JP', sans-serif; font-size: 12px;
-    background: var(--surface); color: var(--text); outline: none;
-    transition: background 0.3s, color 0.3s;
-  }
-
-  .term-input:focus { border-color: var(--navy); }
-
-  .btn-add-term {
-    background: var(--gold); color: var(--navy-dark);
-    border: none; padding: 6px 12px; border-radius: 4px;
-    font-size: 12px; font-weight: 700; cursor: pointer;
-    font-family: 'Noto Sans JP', sans-serif; white-space: nowrap;
-  }
-
-  /* フッター */
-  footer {
-    background: var(--panel-header-bg);
-    border-top: 2px solid var(--gold);
-    padding: 7px 24px;
-    text-align: right;
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.12em;
-    flex-shrink: 0;
-  }
-
-  /* モーダル */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: var(--modal-overlay);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 200;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.2s;
-  }
-
+  /* ------------------------------------------------------------------
+     Modals
+  ------------------------------------------------------------------ */
+  .modal-overlay { position: fixed; inset: 0; background: var(--modal-overlay); display: flex; align-items: center; justify-content: center; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.2s; backdrop-filter: blur(4px); }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    width: 500px; max-width: 95vw;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    transform: translateY(12px);
-    transition: transform 0.25s;
-  }
-
+  .modal { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; width: 550px; max-width: 95vw; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: translateY(12px); transition: transform 0.25s; }
   .modal-overlay.open .modal { transform: translateY(0); }
+  
+  .modal-header { background: var(--bg-surface-alt); color: var(--text-main); padding: 16px 24px; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); }
+  .modal-header i { font-size: 20px; color: var(--primary-color); }
+  .modal-close { margin-left: auto; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; display: flex; align-items: center; transition: color 0.2s; }
+  .modal-close:hover { color: var(--accent-color); }
+  .modal-body { padding: 24px; }
 
-  .modal-header {
-    background: var(--panel-header-bg);
-    color: #ffffff;
-    padding: 14px 20px;
-    font-size: 14px; font-weight: 700;
-    display: flex; align-items: center; gap: 10px;
-    border-radius: 10px 10px 0 0;
-    border-bottom: 2px solid var(--gold);
-  }
+  /* How-to */
+  .how-section { margin-bottom: 24px; }
+  .how-section h3 { font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .how-section h3 i { color: var(--premium-gold); font-size: 18px; }
+  
+  .purpose-box { background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; font-size: 13px; line-height: 1.8; color: var(--text-main); }
+  .how-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .how-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; line-height: 1.7; color: var(--text-main); background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; }
+  .step-num { background: var(--primary-color); color: #ffffff; width: 24px; height: 24px; border-radius: 50%; font-size: 12px; font-weight: 700; font-family: 'Roboto', sans-serif; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .how-icon { font-size: 20px; flex-shrink: 0; color: var(--primary-color); margin-top: 2px;}
 
-  .modal-close {
-    margin-left: auto;
-    background: none; border: none;
-    color: var(--text-muted); font-size: 20px;
-    cursor: pointer; line-height: 1;
-    transition: color 0.2s;
-  }
-
-  .modal-close:hover { color: #ffffff; }
-
-  .modal-body { padding: 20px; }
-
-  /* 使い方モーダル */
-  .how-section { margin-bottom: 20px; }
-
-  .how-section h3 {
-    font-size: 13px; font-weight: 700; color: var(--gold);
-    border-left: 3px solid var(--gold);
-    padding-left: 10px; margin-bottom: 10px;
-  }
-
-  .purpose-box {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px; padding: 14px 16px;
-    font-size: 12px; line-height: 1.9; color: var(--text);
-  }
-
-  .how-list {
-    list-style: none; display: flex; flex-direction: column; gap: 10px;
-  }
-
-  .how-list li {
-    display: flex; align-items: flex-start; gap: 10px;
-    font-size: 12px; line-height: 1.8; color: var(--text);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px; padding: 10px 12px;
-  }
-
-  .step-num {
-    background: var(--navy); color: #ffffff;
-    width: 22px; height: 22px; border-radius: 50%;
-    font-size: 11px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 1px;
-  }
-
-  .how-icon { font-size: 18px; flex-shrink: 0; }
-
-  /* 設定モーダル */
-  .setting-row {
-    display: flex; align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-    gap: 12px;
-  }
-
+  /* Settings */
+  .setting-row { display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-color); gap: 16px; }
   .setting-row:last-child { border-bottom: none; }
-
-  .setting-label {
-    flex: 1; font-size: 13px; font-weight: 500; color: var(--text);
-  }
-
-  .setting-sub {
-    font-size: 11px; color: var(--text-muted); margin-top: 3px;
-  }
-
+  .setting-label { flex: 1; font-size: 14px; font-weight: 700; color: var(--text-main); }
+  .setting-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 400; }
+  
   .toggle-wrap { display: flex; align-items: center; gap: 8px; }
-  .toggle-label { font-size: 11px; color: var(--text-muted); }
-
-  .toggle {
-    position: relative; width: 44px; height: 24px;
-    display: inline-block; flex-shrink: 0;
-  }
-
+  .toggle-label { font-size: 12px; color: var(--text-muted); font-weight: 700; }
+  .toggle { position: relative; width: 48px; height: 26px; display: inline-block; flex-shrink: 0; }
   .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: #cbd5e1; border-radius: 24px; cursor: pointer; transition: background 0.3s; }
+  .toggle-slider::before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+  input:checked + .toggle-slider { background: var(--primary-color); }
+  input:checked + .toggle-slider::before { transform: translateX(22px); }
 
-  .toggle-slider {
-    position: absolute; inset: 0;
-    background: var(--border); border-radius: 24px;
-    cursor: pointer; transition: background 0.2s;
-  }
+  .btn-demo { background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-demo:hover { border-color: var(--primary-color); color: var(--primary-color); }
+  .btn-clear-modal { background: var(--error-bg); color: var(--accent-color); border: 1px solid rgba(231, 76, 60, 0.3); padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-clear-modal:hover { background: var(--accent-color); color: white; }
 
-  .toggle-slider::before {
-    content: ''; position: absolute;
-    width: 18px; height: 18px; left: 3px; top: 3px;
-    background: white; border-radius: 50%;
-    transition: transform 0.2s;
-  }
+  .setting-note { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border-color); }
 
-  input:checked + .toggle-slider { background: var(--navy); }
-  input:checked + .toggle-slider::before { transform: translateX(20px); }
-
-  .btn-demo {
-    background: var(--surface2);
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 8px 16px; border-radius: 4px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 12px; cursor: pointer;
-    transition: all 0.2s; white-space: nowrap;
-  }
-
-  .btn-demo:hover { border-color: var(--gold); color: var(--gold); }
-
-  .btn-clear-modal {
-    background: var(--error-bg);
-    color: var(--error);
-    border: 1px solid #f0b8b2;
-    padding: 8px 16px; border-radius: 4px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 12px; cursor: pointer; font-weight: 700;
-    white-space: nowrap;
-  }
-
-  .setting-note {
-    font-size: 10px; color: var(--text-muted);
-    text-align: center; margin-top: 16px;
-    padding-top: 12px; border-top: 1px dashed var(--border);
-  }
-
-  .copied-toast {
-    position: fixed; bottom: 40px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--navy); color: #ffffff;
-    padding: 10px 24px; border-radius: 24px;
-    font-size: 13px; opacity: 0;
-    transition: opacity 0.3s; pointer-events: none; z-index: 999;
-  }
-
+  /* Toast */
+  .copied-toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: #ffffff; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 700; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; box-shadow: var(--shadow-float); display: flex; align-items: center; gap: 8px; }
   .copied-toast.show { opacity: 1; }
 
-  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo-mark" onclick="resetToTop()" style="cursor:pointer;" title="最初の画面に戻る">書</div>
+  <div class="logo-mark" onclick="resetToTop()" style="cursor:pointer;" title="最初の画面に戻る">
+    <i class="ph-fill ph-file-magnifying-glass"></i>
+  </div>
   <div class="header-text" onclick="resetToTop()" style="cursor:pointer;" title="最初の画面に戻る">
     <h1>書面チェックくん</h1>
-    <p>法律文書 書式チェック＆整形ツール　｜　試作版 ver.0.1</p>
+    <p>弁護士 思考コンパス Suite</p>
   </div>
   <div class="header-actions">
     <div class="badge">PROTOTYPE</div>
-    <button class="icon-btn" title="使い方" onclick="openModal('howModal')">❓</button>
-    <button class="icon-btn" title="設定" onclick="openModal('settingModal')">⚙️</button>
+    <button class="icon-btn" title="使い方" onclick="openModal('howModal')"><i class="ph-bold ph-question"></i></button>
+    <button class="icon-btn" title="設定" onclick="openModal('settingModal')"><i class="ph-bold ph-gear"></i></button>
   </div>
 </header>
 
 <div class="main-container">
   <div class="panel-left">
     <div class="panel-header">
-      <div class="dot"></div>
-      書面テキストを貼り付けてください
+      <i class="ph-fill ph-file-text"></i> 書面テキストを貼り付けてください
     </div>
     <textarea id="inputText" placeholder="Wordからコピーしたテキストをここへ貼り付けてください。
 
@@ -597,60 +379,56 @@
 ・インデントの自動整形
 ・登録用語の表記ゆれ検出"></textarea>
     <div class="action-bar">
-      <button class="btn-primary" onclick="runCheck()">▶ チェック実行</button>
-      <button class="btn-secondary" onclick="clearAll()">クリア</button>
+      <button class="btn-primary" onclick="runCheck()"><i class="ph-fill ph-play-circle"></i> チェック実行</button>
+      <button class="btn-secondary" onclick="clearAll()"><i class="ph-bold ph-eraser"></i> クリア</button>
       <span class="char-count" id="charCount">0 文字</span>
     </div>
   </div>
 
   <div class="panel-right">
     <div class="panel-header">
-      <div class="dot"></div>
-      チェック結果
+      <i class="ph-fill ph-chart-bar"></i> チェック結果
     </div>
     <div class="results-area" id="resultsArea">
       <div class="empty-state" id="emptyState">
-        <div class="empty-icon">📋</div>
+        <div class="empty-icon"><i class="ph-fill ph-clipboard-text"></i></div>
         <p>左側にテキストを貼り付けて<br>「チェック実行」を押してください</p>
         <small>句読点・ナンバリング・インデント・表記ゆれを一括チェックします</small>
       </div>
     </div>
     <div class="term-panel">
-      <div class="term-panel-title">📌 正式用語の登録（表記ゆれ検出に使用）</div>
+      <div class="term-panel-title"><i class="ph-fill ph-push-pin"></i> 正式用語の登録（表記ゆれ検出に使用）</div>
       <div class="term-list" id="termList"></div>
       <div class="term-input-row">
         <input type="text" class="term-input" id="termInput" placeholder="例：こだまや法律事務所" />
-        <button class="btn-add-term" onclick="addTerm()">＋ 登録</button>
+        <button class="btn-add-term" onclick="addTerm()"><i class="ph-bold ph-plus"></i> 登録</button>
       </div>
     </div>
   </div>
 </div>
 
-<footer>Developed by SPC &nbsp;|&nbsp; Smile Plus Consulting</footer>
+<footer>© Legal Thinking Compass Suite. All rights reserved.</footer>
 
 <!-- 使い方モーダル -->
 <div class="modal-overlay" id="howModal" onclick="closeOnOverlay(event,'howModal')">
   <div class="modal">
     <div class="modal-header">
-      ❓ 使い方・目的
-      <button class="modal-close" onclick="closeModal('howModal')">✕</button>
+      <i class="ph-fill ph-question"></i> 使い方・目的
+      <button class="modal-close" onclick="closeModal('howModal')"><i class="ph-bold ph-x"></i></button>
     </div>
     <div class="modal-body">
 
       <div class="how-section">
-        <h3>このツールの目的</h3>
+        <h3><i class="ph-fill ph-target"></i> このツールの目的</h3>
         <div class="purpose-box">
-          法律文書（準備書面・答弁書・内容証明など）の書式ミスを
-          自動でチェック・整形するツールです。<br><br>
-          句読点のミス、項目番号の順番崩れ、インデントのズレ、
-          事務所名などの表記ゆれを一括で発見できます。<br><br>
-          WordからコピーしてAIにかける前の「前処理」として
-          ご活用ください。
+          法律文書（準備書面・答弁書・内容証明など）の書式ミスを自動でチェック・整形するツールです。<br><br>
+          句読点のミス、項目番号の順番崩れ、インデントのズレ、事務所名などの表記ゆれを一括で発見できます。<br><br>
+          WordからコピーしてAIにかける前の「前処理」としてご活用ください。
         </div>
       </div>
 
       <div class="how-section">
-        <h3>基本の使い方（3ステップ）</h3>
+        <h3><i class="ph-fill ph-list-numbers"></i> 基本の使い方（3ステップ）</h3>
         <ul class="how-list">
           <li>
             <span class="step-num">1</span>
@@ -658,7 +436,7 @@
           </li>
           <li>
             <span class="step-num">2</span>
-            <span>「<strong>▶ チェック実行</strong>」ボタンを押すと、右側に結果が表示されます。<br>🔴 赤は要修正、🟡 黄は要確認です。</span>
+            <span>「<strong>チェック実行</strong>」ボタンを押すと、右側に結果が表示されます。<br>🔴 赤は要修正、🟡 黄は要確認です。</span>
           </li>
           <li>
             <span class="step-num">3</span>
@@ -668,37 +446,23 @@
       </div>
 
       <div class="how-section">
-        <h3>チェック内容の詳細</h3>
+        <h3><i class="ph-fill ph-magnifying-glass"></i> チェック内容の詳細</h3>
         <ul class="how-list">
           <li>
-            <span class="how-icon">🔤</span>
+            <i class="ph-fill ph-text-aa how-icon"></i>
             <span><strong>句読点チェック</strong><br>半角カンマ「,」や全角コンマ「，」「．」を検出します。裁判文書では「、」「。」が原則です。</span>
           </li>
           <li>
-            <span class="how-icon">🔢</span>
+            <i class="ph-fill ph-sort-ascending how-icon"></i>
             <span><strong>ナンバリングチェック</strong><br>第１→１→(1)→ア→(ア)の順番を確認します。番号の飛びや重複を検出します。</span>
           </li>
           <li>
-            <span class="how-icon">📐</span>
+            <i class="ph-fill ph-text-indent how-icon"></i>
             <span><strong>インデント自動整形</strong><br>項目の階層に応じて全角スペースで字下げを整形します。整形済みテキストをそのままコピーできます。</span>
           </li>
           <li>
-            <span class="how-icon">📌</span>
+            <i class="ph-fill ph-push-pin how-icon"></i>
             <span><strong>表記ゆれ検出</strong><br>事務所名・当事者名の正式表記を登録しておくと、略称や誤表記を検出してお知らせします。</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="how-section">
-        <h3>用語登録の使い方</h3>
-        <ul class="how-list">
-          <li>
-            <span class="how-icon">➕</span>
-            <span>画面下の「正式用語の登録」欄に正式名称を入力して「＋登録」を押してください。<br>例：<strong>こだまや法律事務所</strong>と登録すると「こだまやLO」などの略称を検出します。</span>
-          </li>
-          <li>
-            <span class="how-icon">🗑️</span>
-            <span>登録したタグの「×」を押すと削除できます。事件ごとに登録し直してお使いください。</span>
           </li>
         </ul>
       </div>
@@ -711,8 +475,8 @@
 <div class="modal-overlay" id="settingModal" onclick="closeOnOverlay(event,'settingModal')">
   <div class="modal">
     <div class="modal-header">
-      ⚙️ 設定
-      <button class="modal-close" onclick="closeModal('settingModal')">✕</button>
+      <i class="ph-fill ph-gear"></i> 設定
+      <button class="modal-close" onclick="closeModal('settingModal')"><i class="ph-bold ph-x"></i></button>
     </div>
     <div class="modal-body">
 
@@ -748,14 +512,14 @@
       </div>
 
       <div class="setting-note">
-        ver.0.1 試作版　｜　Developed by SPC　｜　Smile Plus Consulting
+        思考コンパス Suite　｜　Developed by SPC
       </div>
 
     </div>
   </div>
 </div>
 
-<div class="copied-toast" id="toast">コピーしました！</div>
+<div class="copied-toast" id="toast"><i class="ph-bold ph-check"></i> コピーしました！</div>
 
 <script>
   let registeredTerms = [];
@@ -801,7 +565,7 @@
 
   function renderTerms() {
     document.getElementById('termList').innerHTML = registeredTerms.map(t =>
-      `<div class="term-tag">${t}<button onclick="removeTerm('${t}')">×</button></div>`
+      `<div class="term-tag">${t}<button onclick="removeTerm('${t}')"><i class="ph-bold ph-x"></i></button></div>`
     ).join('');
   }
 
@@ -875,7 +639,7 @@
     document.getElementById('charCount').textContent = sampleText.length + ' 文字';
     registeredTerms = ['株式会社サクラ商事', '有限会社ナデシコ物産', 'ジャパンテスト株式会社'];
     renderTerms();
-    showToast('デモデータを読み込みました');
+    showToast('<i class="ph-bold ph-check"></i> デモデータを読み込みました');
   }
 
   function runCheck() {
@@ -931,17 +695,11 @@
     return issues;
   }
 
-  // 数字・カタカナを連番インデックスに変換
   function toIndex(str) {
     if (!str) return 0;
     const katakana = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
     const ki = katakana.indexOf(str);
     if (ki >= 0) return ki + 1;
-    return parseInt(str.replace(/[０-９]/g, s => s.charCodeAt(0) - 0xFF10)) || 0;
-  }
-
-  function toHalfNum(str) {
-    if (!str) return 0;
     return parseInt(str.replace(/[０-９]/g, s => s.charCodeAt(0) - 0xFF10)) || 0;
   }
 
@@ -1007,8 +765,8 @@
     html += `
       <div class="output-section">
         <div class="output-header">
-          📐 インデント整形済みテキスト
-          <button class="btn-copy" onclick="copyFormatted()">コピー</button>
+          <span><i class="ph-fill ph-text-indent"></i> インデント整形済みテキスト</span>
+          <button class="btn-copy" onclick="copyFormatted()"><i class="ph-bold ph-copy"></i> コピー</button>
         </div>
         <div class="output-text">${escapeHtml(formattedResult)}</div>
       </div>`;
@@ -1020,7 +778,7 @@
     const hasError = items.some(i => i.type === 'error');
     const hasWarn  = items.some(i => i.type === 'warn');
     const cls = hasError ? 'has-error' : hasWarn ? 'has-warn' : 'all-ok';
-    const icon = hasError ? '❌' : hasWarn ? '⚠️' : '✅';
+    const icon = hasError ? '<i class="ph-fill ph-x-circle"></i>' : hasWarn ? '<i class="ph-fill ph-warning-circle"></i>' : '<i class="ph-fill ph-check-circle"></i>';
     const badge = items.length === 0 ? 'OK' : items.length + '件';
 
     let html = `<div class="check-section">
@@ -1029,15 +787,16 @@
 
     if (items.length > 0) {
       items.forEach(item => {
+        const itemIcon = item.type === 'error' ? '<i class="ph-fill ph-x-circle" style="color:var(--accent-color)"></i>' : '<i class="ph-fill ph-warning-circle" style="color:var(--warn-color)"></i>';
         html += `<div class="check-item">
-          <span class="item-icon">${item.type === 'error' ? '🔴' : '🟡'}</span>
+          <span class="item-icon">${itemIcon}</span>
           <div class="item-text">${item.msg}
             ${item.found ? `<span class="highlight-text">${escapeHtml(item.found)}</span>` : ''}
             <div class="item-location">${item.location}</div>
           </div></div>`;
       });
     } else {
-      html += `<div class="check-item"><span class="item-icon">✅</span><div class="item-text">問題は検出されませんでした</div></div>`;
+      html += `<div class="check-item"><span class="item-icon"><i class="ph-fill ph-check-circle" style="color:var(--success-color)"></i></span><div class="item-text">問題は検出されませんでした</div></div>`;
     }
 
     html += `</div></div>`;
@@ -1049,17 +808,15 @@
   }
 
   function copyFormatted() {
-    // クリップボードAPIが使える場合
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(formattedResult)
-        .then(() => showToast('コピーしました！'))
+        .then(() => showToast('<i class="ph-bold ph-check"></i> コピーしました！'))
         .catch(() => fallbackCopy(formattedResult));
     } else {
       fallbackCopy(formattedResult);
     }
   }
 
-  // フォールバック：テキストエリアを使ったコピー（ローカルファイル・旧ブラウザ対応）
   function fallbackCopy(text) {
     const ta = document.createElement('textarea');
     ta.value = text;
@@ -1071,23 +828,23 @@
     ta.select();
     try {
       document.execCommand('copy');
-      showToast('コピーしました！');
+      showToast('<i class="ph-bold ph-check"></i> コピーしました！');
     } catch (e) {
-      showToast('コピー失敗：手動で選択してください');
+      showToast('<i class="ph-bold ph-warning"></i> コピー失敗：手動で選択してください');
     }
     document.body.removeChild(ta);
   }
 
   function showToast(msg) {
     const toast = document.getElementById('toast');
-    toast.textContent = msg;
+    toast.innerHTML = msg;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 2200);
   }
 
   function resetToTop() {
     clearAll();
-    showToast('最初の画面に戻りました');
+    showToast('<i class="ph-bold ph-arrow-counter-clockwise"></i> 最初の画面に戻りました');
   }
 
   function clearAll() {
@@ -1095,7 +852,7 @@
     document.getElementById('charCount').textContent = '0 文字';
     document.getElementById('resultsArea').innerHTML = `
       <div class="empty-state" id="emptyState">
-        <div class="empty-icon">📋</div>
+        <div class="empty-icon"><i class="ph-fill ph-clipboard-text"></i></div>
         <p>左側にテキストを貼り付けて<br>「チェック実行」を押してください</p>
         <small>句読点・ナンバリング・インデント・表記ゆれを一括チェックします</small>
       </div>`;
