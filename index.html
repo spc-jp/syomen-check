@@ -13,8 +13,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- Icons: LPと統一 -->
-<script src="https://unpkg.com/@phosphor-icons/web"></script>
+<!-- Icons: LPと統一（CSS版・バージョン固定で確実に表示） -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css" />
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css" />
 
 <style>
   /* ------------------------------------------------------------------
@@ -23,25 +25,25 @@
   :root {
     --primary-h: 215;
     --primary-s: 40%;
-    --primary-l: 20%; 
-    
+    --primary-l: 20%;
+
     --primary-color: hsl(var(--primary-h), var(--primary-s), var(--primary-l));
     --primary-light: hsl(var(--primary-h), var(--primary-s), 90%);
-    
-    --premium-gold: #c5a059; 
+
+    --premium-gold: #c5a059;
     --premium-gold-light: #f0e6d2;
-    
+
     --accent-color: #e74c3c; /* Error */
     --warn-color: #f39c12;   /* Warning */
     --success-color: #27ae60;/* OK */
-    
+
     --bg-body: #f8f9fa;
     --bg-surface: #ffffff;
-    --bg-surface-alt: #f4f6f8; 
+    --bg-surface-alt: #f4f6f8;
     --text-main: #2c3e50;
     --text-muted: #636e72;
     --border-color: #dfe6e9;
-    
+
     --error-bg: #fdf0ee;
     --warn-bg: #fef8e8;
     --ok-bg: #eafaf1;
@@ -58,7 +60,7 @@
     --text-muted: #94a3b8;
     --border-color: #334155;
     --primary-color: #2c3e50;
-    
+
     --error-bg: #3f1a1a;
     --warn-bg: #402a10;
     --ok-bg: #1a3020;
@@ -226,7 +228,7 @@
   /* Score Board */
   .score-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
   .score-card { background: var(--bg-surface); border-radius: 8px; padding: 16px 10px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-  
+
   .score-card.error { border-bottom: 3px solid var(--accent-color); }
   .score-card.warn  { border-bottom: 3px solid var(--warn-color); }
   .score-card.ok    { border-bottom: 3px solid var(--success-color); }
@@ -266,7 +268,7 @@
   .output-header { background: var(--bg-surface-alt); color: var(--text-main); padding: 12px 16px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); }
   .output-header span { display: flex; align-items: center; gap: 8px; }
   .output-header i { color: var(--primary-color); font-size: 16px; }
-  
+
   .btn-copy { background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
   .btn-copy:hover { border-color: var(--primary-color); color: var(--primary-color); }
 
@@ -280,11 +282,11 @@
   .term-tag { background: var(--bg-surface-alt); border: 1px solid var(--border-color); color: var(--text-main); font-size: 12px; padding: 4px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; }
   .term-tag button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; display: flex; align-items: center; transition: 0.2s; }
   .term-tag button:hover { color: var(--accent-color); }
-  
+
   .term-input-row { display: flex; gap: 8px; }
   .term-input { flex: 1; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 13px; background: var(--bg-surface-alt); color: var(--text-main); outline: none; transition: border-color 0.2s; }
   .term-input:focus { border-color: var(--primary-color); background: var(--bg-surface); }
-  
+
   .btn-add-term { background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-main); padding: 0 16px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
   .btn-add-term:hover { border-color: var(--premium-gold); color: var(--premium-gold); }
 
@@ -300,7 +302,7 @@
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; width: 550px; max-width: 95vw; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); transform: translateY(12px); transition: transform 0.25s; }
   .modal-overlay.open .modal { transform: translateY(0); }
-  
+
   .modal-header { background: var(--bg-surface-alt); color: var(--text-main); padding: 16px 24px; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-color); }
   .modal-header i { font-size: 20px; color: var(--primary-color); }
   .modal-close { margin-left: auto; background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; display: flex; align-items: center; transition: color 0.2s; }
@@ -311,7 +313,7 @@
   .how-section { margin-bottom: 24px; }
   .how-section h3 { font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
   .how-section h3 i { color: var(--premium-gold); font-size: 18px; }
-  
+
   .purpose-box { background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; font-size: 13px; line-height: 1.8; color: var(--text-main); }
   .how-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
   .how-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; line-height: 1.7; color: var(--text-main); background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px 16px; }
@@ -323,7 +325,7 @@
   .setting-row:last-child { border-bottom: none; }
   .setting-label { flex: 1; font-size: 14px; font-weight: 700; color: var(--text-main); }
   .setting-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 400; }
-  
+
   .toggle-wrap { display: flex; align-items: center; gap: 8px; }
   .toggle-label { font-size: 12px; color: var(--text-muted); font-weight: 700; }
   .toggle { position: relative; width: 48px; height: 26px; display: inline-block; flex-shrink: 0; }
