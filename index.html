@@ -349,6 +349,18 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+  /* 整形ルール表 */
+  .rule-table { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 12px; }
+  .rule-table th, .rule-table td { border: 1px solid var(--border-color); padding: 8px 10px; text-align: left; }
+  .rule-table th { background: var(--bg-surface-alt); font-weight: 700; color: var(--text-main); font-size: 11px; letter-spacing: 0.05em; }
+  .rule-table td { background: var(--bg-surface); color: var(--text-main); }
+  .rule-table tbody tr:hover td { background: var(--bg-surface-alt); }
+  .rule-note { font-size: 12px; color: var(--text-muted); line-height: 1.7; display: flex; align-items: flex-start; gap: 6px; margin-top: 8px; }
+  .rule-note i { color: var(--primary-color); font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+  .rule-note-small { font-size: 11px; color: var(--text-muted); }
+  .purpose-box a { color: var(--primary-color); text-decoration: underline; }
+  .purpose-box a:hover { color: var(--premium-gold); }
 </style>
 </head>
 <body>
@@ -460,13 +472,61 @@
           </li>
           <li>
             <i class="ph-fill ph-text-indent how-icon"></i>
-            <span><strong>インデント自動整形</strong><br>項目の階層に応じて全角スペースで字下げを整形します。整形済みテキストをそのままコピーできます。</span>
+            <span><strong>インデント自動整形</strong><br>裁判所書式の7階層に従い、各見出しを所定の位置に配置します。番号は全角に変換され、番号と本文の間は全角スペース1つで区切られます。</span>
           </li>
           <li>
             <i class="ph-fill ph-push-pin how-icon"></i>
             <span><strong>表記ゆれ検出</strong><br>事務所名・当事者名の正式表記を登録しておくと、略称や誤表記を検出してお知らせします。</span>
           </li>
         </ul>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-list-checks"></i> 整形ルール（裁判所書式7階層）</h3>
+        <div class="purpose-box">
+          <table class="rule-table">
+            <thead>
+              <tr><th>レベル</th><th>番号形式</th><th>例</th><th>インデント</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>第＋全角数字</td><td>第１、第２</td><td>0文字</td></tr>
+              <tr><td>2</td><td>全角数字</td><td>１、２</td><td>1文字</td></tr>
+              <tr><td>3</td><td>半角括弧＋数字</td><td>(1)、(2)</td><td>2文字</td></tr>
+              <tr><td>4</td><td>全角カタカナ</td><td>ア、イ</td><td>3文字</td></tr>
+              <tr><td>5</td><td>半角括弧＋カタカナ</td><td>(ア)、(イ)</td><td>4文字</td></tr>
+              <tr><td>6</td><td>全角小文字</td><td>ａ、ｂ</td><td>5文字</td></tr>
+              <tr><td>7</td><td>半角括弧＋小文字</td><td>(a)、(b)</td><td>6文字</td></tr>
+            </tbody>
+          </table>
+          <p class="rule-note"><i class="ph-fill ph-info"></i> Wordに貼り付けた後は、各段落を選択して「段落 → インデントと行間隔 → 最初の行：ぶら下げ」を設定すると、見出し番号と本文の頭が揃った「込み出し」スタイルになります。</p>
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-warning"></i> ご利用上の注意</h3>
+        <div class="purpose-box">
+          このツールは<strong>書面の前処理チェック専用</strong>です。事件番号の自動入力、文書ファイル（.docx）の直接編集、保存機能はありません。<br><br>
+          書式の最終整形は、Word側で「ぶら下げインデント」「フォント統一（MS明朝12pt）」「ページ設定（A4、26行×37文字）」を行ってください。<br><br>
+          より本格的な書式整形をdocxファイルに対して行いたい場合は、Word VBA「岡口マクロ」や、関 智之弁護士のOSSツール「court-format-converter」が知られています。
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-shield-check"></i> データの取り扱い</h3>
+        <div class="purpose-box">
+          入力されたテキストは<strong>お使いのブラウザ内だけで処理され、外部のサーバーには一切送信・保存されません</strong>。<br><br>
+          ページを閉じる、または「クリア」ボタンを押すと、入力内容は完全に消去されます。登録した正式用語も同様にブラウザを閉じると消えます（永続保存はしません）。
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-book-open"></i> 参考文献</h3>
+        <div class="purpose-box">
+          整形ルールの設計にあたり、以下の記事を参考にさせていただきました。<br><br>
+          関 智之 弁護士（東京弁護士会／中野通り法律事務所）<br>
+          「<a href="https://zenn.dev/yutoribengoshi/articles/67d72ef4117c79" target="_blank" rel="noopener">インデントで40分説教されたので裁判所書式の自動整形ツールを作った</a>」<br>
+          <span class="rule-note-small">Zenn / 2026年4月公開</span>
+        </div>
       </div>
 
     </div>
@@ -725,18 +785,49 @@
     return issues;
   }
 
+  // 裁判所書式7階層の整形（関 智之弁護士の記事を参考）
+  // レベル1: 第１    レベル2:  １    レベル3:   (1)
+  // レベル4:    ア   レベル5:     (ア)   レベル6:      ａ   レベル7:       (a)
   function formatIndent(text) {
+    // 半角→全角変換ヘルパー
+    const toFullNum = s => s.replace(/[0-9]/g, c => String.fromCharCode(c.charCodeAt(0) + 0xFEE0));
+    // 直前の見出しレベル（本文行のぶら下げ用）
+    let lastHeadingIndent = 0;
+
+    const patterns = [
+      // [正規表現, インデント全角スペース数, 番号フォーマッタ]
+      { re: /^第\s*([０-９0-9]+)\s*(.*)$/, indent: 0,
+        fmt: (m) => '第' + toFullNum(m[1]) + (m[2] ? '　' + m[2].trim() : '') },
+      { re: /^[（(]\s*([０-９0-9]+)\s*[）)]\s*(.*)$/, indent: 2,
+        fmt: (m) => '(' + toFullNum(m[1]).replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)) + ')' + (m[2] ? '　' + m[2].trim() : '') },
+      { re: /^([０-９0-9]+)[\s　]+(.*)$/, indent: 1,
+        fmt: (m) => toFullNum(m[1]) + '　' + m[2].trim() },
+      { re: /^[（(]\s*([ア-ン])\s*[）)]\s*(.*)$/, indent: 4,
+        fmt: (m) => '(' + m[1] + ')' + (m[2] ? '　' + m[2].trim() : '') },
+      { re: /^([ア-ン])[\s　]+(.*)$/, indent: 3,
+        fmt: (m) => m[1] + '　' + m[2].trim() },
+      { re: /^[（(]\s*([ａ-ｚa-z])\s*[）)]\s*(.*)$/, indent: 6,
+        fmt: (m) => '(' + m[1] + ')' + (m[2] ? '　' + m[2].trim() : '') },
+      { re: /^([ａ-ｚa-z])[\s　]+(.*)$/, indent: 5,
+        fmt: (m) => m[1] + '　' + m[2].trim() },
+    ];
+
     return text.split('\n').map(line => {
       const t = line.trim();
       if (!t) return '';
-      if (/^第\s*[０-９0-9]+/.test(t)) return t;
-      if (/^[０-９0-9]+[\s　]/.test(t)) return '　' + t;
-      if (/^[（(][０-９0-9]+[）)]/.test(t)) return '　　' + t;
-      if (/^[ア-ン][\s　]/.test(t)) return '　　　' + t;
-      if (/^[（(][ア-ン][）)]/.test(t)) return '　　　　' + t;
-      if (/^[ａ-ｚa-z][\s　]/.test(t)) return '　　　　　' + t;
-      if (/^[（(][ａ-ｚa-z][）)]/.test(t)) return '　　　　　　' + t;
-      return line;
+      // 見出し行の判定
+      for (const p of patterns) {
+        const m = t.match(p.re);
+        if (m) {
+          lastHeadingIndent = p.indent + 2; // 本文ぶら下げ位置を記録
+          return '　'.repeat(p.indent) + p.fmt(m);
+        }
+      }
+      // 見出しでない通常の本文行
+      // 見出しがまだ出ていない＝文書冒頭（タイトル・宛名・日付・代理人欄）→ そのまま
+      // 見出しが出た後の本文行 → 直前の見出しレベルにぶら下げ
+      if (lastHeadingIndent === 0) return t;
+      return '　'.repeat(lastHeadingIndent) + t;
     }).join('\n');
   }
 
