@@ -361,6 +361,90 @@
   .rule-note-small { font-size: 11px; color: var(--text-muted); }
   .purpose-box a { color: var(--primary-color); text-decoration: underline; }
   .purpose-box a:hover { color: var(--premium-gold); }
+
+  /* Word貼り付けコツ ヘルプボタン */
+  .help-btn-small {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border: 1px solid var(--border-color);
+    background: var(--bg-surface); color: var(--text-main);
+    border-radius: 6px; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s ease;
+    font-family: inherit;
+  }
+  .help-btn-small:hover {
+    background: var(--bg-surface-alt); border-color: var(--primary-color);
+    color: var(--primary-color);
+  }
+  .help-btn-small i { font-size: 14px; color: #2b579a; }
+
+  /* Word貼り付けのコツボタン */
+  .btn-help-word {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; margin-right: 8px;
+    border: 1px solid #2b579a; background: #fff; color: #2b579a;
+    border-radius: 6px; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s ease;
+    font-family: inherit;
+  }
+  .btn-help-word:hover {
+    background: #2b579a; color: #fff;
+  }
+  .btn-help-word i { font-size: 14px; }
+
+  /* Wordダイアログ風モック */
+  .word-mock {
+    background: linear-gradient(180deg, #fafbfd 0%, #f1f3f6 100%);
+    border: 1px solid #c8cfd8; border-radius: 8px;
+    padding: 16px; margin: 14px 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .word-mock-title {
+    font-size: 13px; font-weight: 700; color: #2b579a;
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 1px solid #d4dae3;
+  }
+  .word-mock-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 6px 0; font-size: 13px;
+  }
+  .word-mock-label {
+    min-width: 80px; color: #444; font-weight: 600;
+  }
+  .word-mock-value {
+    flex: 1; padding: 4px 10px;
+    background: white; border: 1px solid #d4dae3; border-radius: 4px;
+    font-size: 12px; color: #222;
+  }
+  .word-mock-highlight {
+    background: #fffbe6 !important;
+    border-color: #ffd54f !important;
+    font-weight: 700; color: #b8860b !important;
+  }
+
+  /* ビフォーアフター */
+  .before-after {
+    display: grid; gap: 10px; margin: 12px 0;
+  }
+  .ba-block {
+    background: var(--bg-surface-alt);
+    border: 1px solid var(--border-color);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .ba-label {
+    font-size: 11px; font-weight: 700;
+    color: var(--text-muted); letter-spacing: 0.05em;
+    margin-bottom: 6px; text-transform: uppercase;
+  }
+  .ba-text {
+    margin: 0; font-family: 'MS明朝', 'ヒラギノ明朝 ProN', serif;
+    font-size: 13px; color: var(--text-main); line-height: 1.8;
+    white-space: pre-wrap;
+  }
+  .ba-arrow {
+    text-align: center; color: var(--premium-gold);
+    font-size: 20px; font-weight: 700;
+  }
 </style>
 </head>
 <body>
@@ -581,6 +665,91 @@
   </div>
 </div>
 
+<!-- Word貼り付け手順モーダル -->
+<div class="modal-overlay" id="wordModal" onclick="closeOnOverlay(event,'wordModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <i class="ph-fill ph-microsoft-word-logo"></i> Wordできれいに整える3ステップ
+      <button class="modal-close" onclick="closeModal('wordModal')" aria-label="閉じる">
+        <i class="ph-bold ph-x"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-number-circle-one"></i> STEP1　整形済みテキストをコピー</h3>
+        <div class="purpose-box">
+          右側パネル上部の「コピー」ボタンを押してください。全角スペースで字下げされたテキストが、まるごとクリップボードに入ります。
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-number-circle-two"></i> STEP2　Wordに貼り付け</h3>
+        <div class="purpose-box">
+          Wordの白紙ページに、そのまま Ctrl+V （Macは ⌘+V）で貼り付けます。<br>
+          この時点では、本文の2行目以降が左端に戻ってしまっています。これは正常です。次の手順で揃えます。
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-number-circle-three"></i> STEP3　ぶら下げインデントを設定</h3>
+        <div class="purpose-box">
+          整えたい段落をマウスでドラッグして選択 → 上部メニュー「ホーム」タブ → 段落グループ右下の小さな🔽 矢印をクリック。<br>
+          「段落」ダイアログが開いたら、下記のように設定します。
+          <div class="word-mock">
+            <div class="word-mock-title">段落ダイアログ設定</div>
+            <div class="word-mock-row">
+              <span class="word-mock-label">配置：</span>
+              <span class="word-mock-value">両端揃え</span>
+            </div>
+            <div class="word-mock-row">
+              <span class="word-mock-label">最初の行：</span>
+              <span class="word-mock-value word-mock-highlight">ぶら下げ</span>
+            </div>
+            <div class="word-mock-row">
+              <span class="word-mock-label">幅：</span>
+              <span class="word-mock-value word-mock-highlight">2字</span>
+            </div>
+          </div>
+          OKを押すと、本文2行目以降が見出しタイトルの頭にピシッと揃います👍
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-eye"></i> 仕上がりイメージ</h3>
+        <div class="purpose-box">
+          <div class="before-after">
+            <div class="ba-block">
+              <div class="ba-label">STEP2の時点（貼り付け直後）</div>
+              <pre class="ba-text">第１　はじめに
+　　本件は、原告と被告の間で締結された
+売買契約に関する紛争である。</pre>
+            </div>
+            <div class="ba-arrow">↓</div>
+            <div class="ba-block">
+              <div class="ba-label">STEP3完了後（裁判所書式）</div>
+              <pre class="ba-text">第１　はじめに
+　　　本件は、原告と被告の間で締結された
+　　　売買契約に関する紛争である。</pre>
+            </div>
+          </div>
+          2行目の頭が、見出しタイトル「はじめに」の頭とピタッと揃っているのが、裁判所書式の「込み出し」スタイルです。
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-lightbulb"></i> よく使う場合の時短ワザ</h3>
+        <div class="purpose-box">
+          一度設定した「ぶら下げ2字」を Word の「スタイル」として保存しておくと、次回からワンクリックで適用できます。<br><br>
+          ホームタブ → スタイルグループ → 新しいスタイル → 名前を「裁判所書式」などで登録。<br>
+          次の書面からは、段落を選んでこのスタイルを当てるだけ😊
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div class="copied-toast" id="toast"><i class="ph-bold ph-check"></i> コピーしました！</div>
 
 <script>
@@ -733,26 +902,73 @@
 
   function checkNumbering(text) {
     const issues = [];
+    // 裁判所書式の7階層を上位から順に判定
     const patterns = [
-      { re: /^第\s*([０-９0-9]+)/, label: '第N（第１階層）' },
-      { re: /^\s*([０-９0-9]+)[\s　]/, label: '数字（第２階層）' },
-      { re: /^\s*[（(]([０-９0-9]+)[）)]/, label: '(1)形式（第３階層）' },
-      { re: /^\s*([ア-ン])[\s　]/, label: 'カタカナ（第４階層）' },
-      { re: /^\s*[（(]([ア-ン])[）)]/, label: '(ア)形式（第５階層）' },
+      { lv: 1, re: /^第\s*([０-９0-9]+)/,                        label: '第１階層「第N」' },
+      { lv: 3, re: /^\s*[（(]\s*([０-９0-9]+)\s*[）)]/,         label: '第３階層「(1)」' },
+      { lv: 2, re: /^\s*([０-９0-9]+)[\s　]/,                     label: '第２階層「N」' },
+      { lv: 5, re: /^\s*[（(]\s*([ア-ン])\s*[）)]/,             label: '第５階層「(ア)」' },
+      { lv: 4, re: /^\s*([ア-ン])[\s　]/,                         label: '第４階層「ア」' },
+      { lv: 7, re: /^\s*[（(]\s*([ａ-ｚa-z])\s*[）)]/,          label: '第７階層「(a)」' },
+      { lv: 6, re: /^\s*([ａ-ｚa-z])[\s　]/,                      label: '第６階層「ａ」' },
     ];
-    const counters = [0,0,0,0,0];
+    const levelNames = { 1:'第N', 2:'N', 3:'(1)', 4:'ア', 5:'(ア)', 6:'ａ', 7:'(a)' };
+    const counters = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+    let prevLevel = 0;
+
+    // 行ごとに一番上位にマッチしたパターンだけを採用
     text.split('\n').forEach((line, idx) => {
-      patterns.forEach((pat, pi) => {
+      // 特殊文字（⑴⑵⑶など）の検出
+      if (/[⑴-⒇]/.test(line)) {
+        issues.push({ type: 'warn',
+          msg: `特殊文字の括弧数字「${line.match(/[⑴-⒇]/)[0]}」が使われています。通常の「(1)(2)」形式に統一してください`,
+          location: `${idx+1}行目` });
+      }
+      // 全角括弧と半角括弧の混在チェック
+      if (/^[\s　]*（[０-９ア-ンａ-ｚ0-9a-z]+）/.test(line)) {
+        issues.push({ type: 'warn',
+          msg: `全角括弧「（）」が使われています。裁判所書式では半角括弧「()」が原則です`,
+          location: `${idx+1}行目` });
+      }
+
+      // 一番上位（lvが小さい順）にソートして、最初にマッチしたものだけ採用
+      const sorted = [...patterns].sort((a,b) => a.lv - b.lv);
+      let matched = null;
+      for (const pat of sorted) {
         const m = line.match(pat.re);
         if (m && m[1] !== undefined) {
-          for (let i = pi+1; i < counters.length; i++) counters[i] = 0;
-          const num = toIndex(m[1]);
-          const expected = counters[pi] + 1;
-          if (num !== expected && num !== 1)
-            issues.push({ type: 'warn', msg: `${pat.label}の番号が${expected}のはずですが「${m[1]}」になっています`, location: `${idx+1}行目` });
-          counters[pi] = num;
+          // 単独数字パターン(lv2)は (1) パターン(lv3) と被るので除外チェック
+          if (pat.lv === 2 && /^\s*[（(]/.test(line)) continue;
+          if (pat.lv === 4 && /^\s*[（(]/.test(line)) continue;
+          if (pat.lv === 6 && /^\s*[（(]/.test(line)) continue;
+          matched = { pat, m };
+          break;
         }
-      });
+      }
+      if (!matched) return;
+
+      const lv = matched.pat.lv;
+      const num = toIndex(matched.m[1]);
+
+      // 階層飛び越しチェック（前のレベルが0=初回、または現在レベル<=前レベル+1ならOK）
+      if (prevLevel > 0 && lv > prevLevel + 1) {
+        issues.push({ type: 'error',
+          msg: `階層が飛んでいます。直前は「${levelNames[prevLevel]}」(第${prevLevel}階層)、ここは「${levelNames[lv]}」(第${lv}階層)です。間の階層を入れるか、見出しレベルを見直してください`,
+          location: `${idx+1}行目` });
+      }
+      // レベル逆行＝下位カウンタをリセット
+      if (lv < prevLevel) {
+        for (let i = lv + 1; i <= 7; i++) counters[i] = 0;
+      }
+      // 番号連続性チェック
+      const expected = counters[lv] + 1;
+      if (num !== expected && num !== 1) {
+        issues.push({ type: 'warn',
+          msg: `${matched.pat.label}の番号が${expected}になるはずですが「${matched.m[1]}」になっています`,
+          location: `${idx+1}行目` });
+      }
+      counters[lv] = num;
+      prevLevel = lv;
     });
     return issues;
   }
@@ -859,6 +1075,7 @@
       <div class="output-section">
         <div class="output-header">
           <span><i class="ph-fill ph-text-indent"></i> インデント整形済みテキスト</span>
+          <button class="btn-help-word" onclick="openModal('wordModal')" title="Wordできれいに貼り付けるコツ"><i class="ph-fill ph-microsoft-word-logo"></i> Word貼り付けのコツ</button>
           <button class="btn-copy" onclick="copyFormatted()"><i class="ph-bold ph-copy"></i> コピー</button>
         </div>
         <div class="output-text">${escapeHtml(formattedResult)}</div>
