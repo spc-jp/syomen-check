@@ -391,6 +391,64 @@
   }
   .btn-help-word i { font-size: 14px; }
 
+  /* テンプレートダウンロードボタン（コピー横の小さい方） */
+  .btn-template {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; margin-right: 8px;
+    border: 1px solid #D0A900; background: #fffbe6;
+    color: #B8860B; text-decoration: none;
+    border-radius: 6px; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s ease;
+    font-family: inherit;
+  }
+  .btn-template:hover {
+    background: #D0A900; color: #fff;
+  }
+  .btn-template i { font-size: 14px; }
+
+  /* おすすめ枠（Wordモーダル内） */
+  .recommended-box h3 {
+    color: #B8860B !important;
+  }
+  .recommended-box h3 i {
+    color: #D0A900 !important;
+  }
+  .recommended-inner {
+    background: linear-gradient(135deg, #fffbe6 0%, #fff7d6 100%) !important;
+    border: 2px solid #D0A900 !important;
+  }
+  .recommended-inner p {
+    margin: 0 0 12px 0; line-height: 1.7;
+  }
+  .recommended-inner p:last-of-type {
+    margin-bottom: 0;
+  }
+  .dl-btn-big {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 14px 20px;
+    background: #223670; color: #fff !important; text-decoration: none;
+    border-radius: 8px; font-size: 14px; font-weight: 700;
+    margin: 12px 0; transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(34,54,112,0.2);
+  }
+  .dl-btn-big:hover {
+    background: #1a2a5c; transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(34,54,112,0.3);
+  }
+  .dl-btn-big i { font-size: 18px; }
+  .dl-note {
+    font-size: 12px !important; color: #777 !important;
+    margin-top: 8px !important;
+  }
+
+  /* セクション区切り */
+  .divider-section {
+    text-align: center; margin: 24px 0 12px !important;
+  }
+  .divider-section h3 {
+    border: none !important; padding: 0 !important;
+  }
+
   /* Wordダイアログ風モック */
   .word-mock {
     background: linear-gradient(180deg, #fafbfd 0%, #f1f3f6 100%);
@@ -515,6 +573,16 @@
       <button class="modal-close" onclick="closeModal('howModal')"><i class="ph-bold ph-x"></i></button>
     </div>
     <div class="modal-body">
+
+      <div class="how-section quick-tip">
+        <h3 style="color:#B8860B;"><i class="ph-fill ph-rocket-launch" style="color:#D0A900;"></i> 一番カンタンな使い方</h3>
+        <div class="purpose-box" style="background: linear-gradient(135deg, #fffbe6 0%, #fff7d6 100%); border: 2px solid #D0A900;">
+          ①　左の空欄に書面をコピペして、青い「チェック実行」ボタンを押す<br>
+          ②　右側の「コピー」ボタンで整形済みテキストを取得<br>
+          ③　<a href="裁判所書式テンプレート.docx" download style="color:#223670; font-weight:700;">こちらの「裁判所書式テンプレート.docx」</a> を開き、本文部分に貼り付け<br>
+          ④　完成🎉（Wordの設定は一切不要）
+        </div>
+      </div>
 
       <div class="how-section">
         <h3><i class="ph-fill ph-target"></i> このツールの目的</h3>
@@ -675,6 +743,32 @@
       </button>
     </div>
     <div class="modal-body">
+
+      <div class="how-section recommended-box">
+        <h3><i class="ph-fill ph-star"></i> いちばんカンタンな方法（おすすめ）</h3>
+        <div class="purpose-box recommended-inner">
+          <p><strong>書式設定済みのWordテンプレートを使えば、貼り付けるだけで完成します🎉</strong></p>
+          <p>テンプレートには「ぶら下げ2字」「ＭＳ明朝12pt」「A4余白」「ページ番号」がすべて設定済みです。Wordの設定は一切不要になります。</p>
+          <a class="dl-btn-big" href="裁判所書式テンプレート.docx" download>
+            <i class="ph-fill ph-download-simple"></i>
+            裁判所書式テンプレート.docx をダウンロード
+          </a>
+          <p class="dl-note">最初の1回だけダウンロードして、PCに保存してください。次回からは、そのファイルをコピーして使いまわせます。</p>
+        </div>
+      </div>
+
+      <div class="how-section">
+        <h3><i class="ph-fill ph-list-numbers"></i> テンプレートを使う場合の3ステップ</h3>
+        <div class="purpose-box">
+          <p>１　ダウンロードしたテンプレートをダブルクリックして開く<br>（ファイル名を「準備書面（１）_◯◯事件」など適宜変更してから保存）</p>
+          <p>２　書面チェックくんで「コピー」ボタンを押す</p>
+          <p>３　テンプレートの本文サンプル部分を選択して削除 → Ctrl+V で貼り付け<br>これで完成です。インデント設定は一切不要👍</p>
+        </div>
+      </div>
+
+      <div class="how-section divider-section">
+        <h3 style="color: var(--text-muted); font-size: 13px;">────　ご自身のWordファイルに貼り付ける場合　────</h3>
+      </div>
 
       <div class="how-section">
         <h3><i class="ph-fill ph-number-circle-one"></i> STEP1　整形済みテキストをコピー</h3>
@@ -1075,7 +1169,8 @@
       <div class="output-section">
         <div class="output-header">
           <span><i class="ph-fill ph-text-indent"></i> インデント整形済みテキスト</span>
-          <button class="btn-help-word" onclick="openModal('wordModal')" title="Wordできれいに貼り付けるコツ"><i class="ph-fill ph-microsoft-word-logo"></i> Word貼り付けのコツ</button>
+          <a class="btn-template" href="裁判所書式テンプレート.docx" download title="書式設定済みのWordテンプレートをダウンロード"><i class="ph-fill ph-download-simple"></i> テンプレート</a>
+          <button class="btn-help-word" onclick="openModal('wordModal')" title="Wordできれいに貼り付けるコツ"><i class="ph-fill ph-microsoft-word-logo"></i> 使い方</button>
           <button class="btn-copy" onclick="copyFormatted()"><i class="ph-bold ph-copy"></i> コピー</button>
         </div>
         <div class="output-text">${escapeHtml(formattedResult)}</div>
